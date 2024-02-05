@@ -3,6 +3,9 @@ package src.kcl.ac.uk.ppacoursework3.simulation;
 import javafx.scene.paint.Color;
 import src.kcl.ac.uk.ppacoursework3.GUI.Field;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * A class representing the shared characteristics of all forms of life
  *
@@ -12,16 +15,16 @@ import src.kcl.ac.uk.ppacoursework3.GUI.Field;
 
 public abstract class Cell {
 
-    private boolean alive;    
+    private boolean alive;
     private boolean nextAlive; // The state of the cell in the next iteration
-    private Field field;
+    private final Field field;
     private Location location;
     private Color color = Color.WHITE;
 
     /**
      * Create a new cell at location in field.
      *
-     * @param field The field currently occupied.
+     * @param field    The field currently occupied.
      * @param location The location within the field.
      */
     public Cell(Field field, Location location, Color col) {
@@ -40,6 +43,7 @@ public abstract class Cell {
 
     /**
      * Check whether the cell is alive or not.
+     *
      * @return true if the cell is still alive.
      */
     public boolean isAlive() {
@@ -83,6 +87,7 @@ public abstract class Cell {
 
     /**
      * Return the cell's location.
+     *
      * @return The cell's location.
      */
     protected Location getLocation() {
@@ -91,6 +96,7 @@ public abstract class Cell {
 
     /**
      * Place the cell at the new location in the given field.
+     *
      * @param location The cell's location.
      */
     protected void setLocation(Location location) {
@@ -100,9 +106,21 @@ public abstract class Cell {
 
     /**
      * Return the cell's field.
+     *
      * @return The cell's field.
      */
     protected Field getField() {
         return field;
+    }
+
+
+    protected List<Cell> getSameType() {
+
+        Class<? extends Cell> type = this.getClass();
+
+        List<Cell> list = field.getLivingNeighbours(location).stream().filter(c -> type.isAssignableFrom(c.getClass())).map(type::cast).distinct().collect(Collectors.toList());
+        //List<Cell> list = field.getLivingNeighbours(location).stream().filter(c -> c.getClass() == this.getClass()).collect(Collectors.toList());
+
+        return list;
     }
 }

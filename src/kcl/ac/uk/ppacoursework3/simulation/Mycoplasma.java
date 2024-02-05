@@ -17,10 +17,12 @@ import java.util.List;
 
 public class Mycoplasma extends Cell {
 
+    public static final double SPAWN_PROB = 0.25;
+
     /**
      * Create a new Mycoplasma.
      *
-     * @param field The field currently occupied.
+     * @param field    The field currently occupied.
      * @param location The location within the field.
      */
     public Mycoplasma(Field field, Location location, Color col) {
@@ -28,17 +30,17 @@ public class Mycoplasma extends Cell {
     }
 
     /**
-    * This is how the Mycoplasma decides if it's alive or not
-    */
+     * This is how the Mycoplasma decides if it's alive or not
+     */
     public void act() {
-        List<Cell> neighbours = getField().getLivingNeighbours(getLocation());
+        List<Cell> neighbours = getSameType();
         setNextState(false);
-    
+
         if (isAlive()) {
             if (neighbours.size() > 1 && neighbours.size() <= 3) {
                 setNextState(true);
             }
-        } else if(neighbours.size() == 3){
+        } else if (neighbours.size() == 3) {
             setNextState(true);
         }
     }

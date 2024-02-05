@@ -13,20 +13,20 @@ import java.util.Random;
  */
 
 public class Randomizer {
-  
+
     private static final int SEED = 1111;
     private static final Random rand = new Random(SEED);
-    private static final boolean useShared = true;
+    private static final boolean useShared = false;
 
     /**
      * Provide a random generator.
+     *
      * @return A random object.
      */
     public static Random getRandom() {
         if (useShared) {
             return rand;
-        }
-        else {
+        } else {
             return new Random();
         }
     }

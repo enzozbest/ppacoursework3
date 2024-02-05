@@ -20,9 +20,8 @@ import java.util.Random;
 
 public class Simulator {
 
-    private static final double MYCOPLASMA_ALIVE_PROB = 0.25;
-    private List<Cell> cells;
-    private Field field;
+    private final List<Cell> cells;
+    private final Field field;
     private int generation;
 
     /**
@@ -34,6 +33,7 @@ public class Simulator {
 
     /**
      * Create a simulation field with the given size.
+     *
      * @param depth Depth of the field. Must be greater than zero.
      * @param width Width of the field. Must be greater than zero.
      */
@@ -55,7 +55,7 @@ public class Simulator {
         }
 
         for (Cell cell : cells) {
-          cell.updateState();
+            cell.updateState();
         }
     }
 
@@ -69,39 +69,54 @@ public class Simulator {
     }
 
     /**
-     * Randomly populate the field live/dead life forms
+     * Randomly populate the field with live/dead life forms
      */
     private void populate() {
-      Random rand = Randomizer.getRandom();
-      field.clear();
-      for (int row = 0; row < field.getDepth(); row++) {
-        for (int col = 0; col < field.getWidth(); col++) {
-          Location location = new Location(row, col);
-          Mycoplasma myco = new Mycoplasma(field, location, Color.ORANGE);
-          if (rand.nextDouble() <= MYCOPLASMA_ALIVE_PROB) {
-            cells.add(myco);
-          }
-          else {
-            myco.setDead();
-            cells.add(myco);
-          }
+        Random rand = Randomizer.getRandom();
+        field.clear();
+        for (int row = 0; row < field.getDepth(); row++) {
+            for (int col = 0; col < field.getWidth(); col++) {
+                Location location = new Location(row, col);
+                Cell cell = null;
+                double probability = rand.nextDouble();
+                LifeForms type = getType(probability);
+                switch (type) {
+                    case MYCOPLASMA -> cell = new Mycoplasma(field, location, Color.ORANGE);
+                    case FUNGUS -> cell = new Fungus(field, location, Color.PURPLE);
+                    default -> cell = new Mycoplasma(field, location, Color.GREEN);
+                }
+                if (probability <= type.SPAWN_PROB) {
+                    cells.add(cell);
+                } else {
+                    cell.setDead();
+                    cells.add(cell);
+                }
+
+            }
         }
-      }
+    }
+
+    private LifeForms getType(double probability) {
+        if (probability <= LifeForms.MYCOPLASMA.SPAWN_PROB) {
+            return LifeForms.MYCOPLASMA;
+        }
+        return LifeForms.FUNGUS;
     }
 
     /**
      * Pause for a given time.
-     * @param millisec  The time to pause for, in milliseconds
+     *
+     * @param millisec The time to pause for, in milliseconds
      */
     public void delay(int millisec) {
         try {
             Thread.sleep(millisec);
+        } catch (InterruptedException exception) {
+            //wake up
         }
-        catch (InterruptedException ie) {
-            // wake up
-        }
+
     }
-    
+
     public Field getField() {
         return field;
     }

@@ -19,11 +19,13 @@ import java.util.Random;
 
 public class Field {
     private static final Random rand = Randomizer.getRandom();
-    private int depth, width;
-    private Cell[][] field;
+    private final int depth;
+    private final int width;
+    private final Cell[][] field;
 
     /**
      * Represent a field of the given dimensions.
+     *
      * @param depth The depth of the field.
      * @param width The width of the field.
      */
@@ -46,6 +48,7 @@ public class Field {
 
     /**
      * Clear the given location.
+     *
      * @param location The location to clear.
      */
     public void clear(Location location) {
@@ -55,9 +58,10 @@ public class Field {
     /**
      * Place a cell at the given location.
      * If there is already a cell at the location it will be lost.
+     *
      * @param cell The cell to be placed.
-     * @param row Row coordinate of the location.
-     * @param col Column coordinate of the location.
+     * @param row  Row coordinate of the location.
+     * @param col  Column coordinate of the location.
      */
     public void place(Cell cell, int row, int col) {
         place(cell, new Location(row, col));
@@ -66,7 +70,8 @@ public class Field {
     /**
      * Place a cell at the given location.
      * If there is already a cell at the location it will be lost.
-     * @param cell The cell to be placed.
+     *
+     * @param cell     The cell to be placed.
      * @param location Where to place the cell.
      */
     public void place(Cell cell, Location location) {
@@ -75,6 +80,7 @@ public class Field {
 
     /**
      * Return the cell at the given location, if any.
+     *
      * @param location Where in the field.
      * @return The cell at the given location, or null if there is none.
      */
@@ -84,6 +90,7 @@ public class Field {
 
     /**
      * Return the cell at the given location, if any.
+     *
      * @param row The desired row.
      * @param col The desired column.
      * @return The cell at the given location, or null if there is none.
@@ -97,6 +104,7 @@ public class Field {
      * given location, or is the same location.
      * The returned location will be within the valid bounds
      * of the field.
+     *
      * @param location The location from which to generate an adjacency.
      * @return A valid location within the grid area.
      */
@@ -109,6 +117,7 @@ public class Field {
      * Return a shuffled list of locations adjacent to the given one.
      * The list will not include the location itself.
      * All locations will lie within the grid.
+     *
      * @param location The location from which to generate adjacencies.
      * @return A list of locations adjacent to that given.
      */
@@ -141,29 +150,31 @@ public class Field {
 
     /**
      * Get a shuffled list of living neighbours
+     *
      * @param location Get locations adjacent to this.
      * @return A list of living neighbours
      */
     public List<Cell> getLivingNeighbours(Location location) {
 
-      assert location != null : "Null location passed to adjacentLocations";
-      List<Cell> neighbours = new LinkedList<>();
+        assert location != null : "Null location passed to adjacentLocations";
+        List<Cell> neighbours = new LinkedList<>();
 
-      if (location != null) {
-        List<Location> adjLocations = adjacentLocations(location);
+        if (location != null) {
+            List<Location> adjLocations = adjacentLocations(location);
 
-        for (Location loc : adjLocations) {
-          Cell cell = field[loc.getRow()][loc.getCol()];
-          if (cell.isAlive())
-            neighbours.add(cell);
+            for (Location loc : adjLocations) {
+                Cell cell = field[loc.getRow()][loc.getCol()];
+                if (cell.isAlive())
+                    neighbours.add(cell);
+            }
+            Collections.shuffle(neighbours, rand);
         }
-        Collections.shuffle(neighbours, rand);
-      }
-      return neighbours;
+        return neighbours;
     }
 
     /**
      * Return the depth of the field.
+     *
      * @return The depth of the field.
      */
     public int getDepth() {
@@ -172,6 +183,7 @@ public class Field {
 
     /**
      * Return the width of the field.
+     *
      * @return The width of the field.
      */
     public int getWidth() {
