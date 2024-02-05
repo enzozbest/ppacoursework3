@@ -78,7 +78,9 @@ public class SimulatorView extends Application {
         stage.setTitle("Life Simulation");
         updateCanvas(simulator.getGeneration(), simulator.getField());
         
-        stage.show();     
+        stage.show();
+
+        simulate(100000000);
     }
 
     /**
@@ -134,7 +136,7 @@ public class SimulatorView extends Application {
            
             for (int gen = 1; gen <= numGenerations; gen++) {
                 simulator.simOneGeneration();    
-                simulator.delay(500);
+                simulator.delay(5);
                 Platform.runLater(() -> {
                     updateCanvas(simulator.getGeneration(), simulator.getField());
                 });
