@@ -18,6 +18,7 @@ public abstract class Cell {
     private boolean alive;
     private boolean nextAlive; // The state of the cell in the next iteration
     private final Field field;
+    protected boolean isBasic;
     private Location location;
     private Color color = Color.WHITE;
 
@@ -28,6 +29,7 @@ public abstract class Cell {
      * @param location The location within the field.
      */
     public Cell(Field field, Location location, Color col) {
+        isBasic = true;
         alive = true;
         nextAlive = false;
         this.field = field;
@@ -113,14 +115,15 @@ public abstract class Cell {
         return field;
     }
 
+    public boolean isBasic() {
+        return isBasic;
+    }
+
 
     protected List<Cell> getSameType() {
-
         Class<? extends Cell> type = this.getClass();
-
         List<Cell> list = field.getLivingNeighbours(location).stream().filter(c -> type.isAssignableFrom(c.getClass())).map(type::cast).distinct().collect(Collectors.toList());
         //List<Cell> list = field.getLivingNeighbours(location).stream().filter(c -> c.getClass() == this.getClass()).collect(Collectors.toList());
-
         return list;
     }
 }

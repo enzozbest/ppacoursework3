@@ -3,6 +3,9 @@ package src.kcl.ac.uk.ppacoursework3.simulation;
 import javafx.scene.paint.Color;
 import src.kcl.ac.uk.ppacoursework3.GUI.Field;
 import src.kcl.ac.uk.ppacoursework3.GUI.SimulatorView;
+import src.kcl.ac.uk.ppacoursework3.lifeForms.Fungus;
+import src.kcl.ac.uk.ppacoursework3.lifeForms.LifeForms;
+import src.kcl.ac.uk.ppacoursework3.lifeForms.Mycoplasma;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -51,6 +54,10 @@ public class Simulator {
         generation++;
         for (Iterator<Cell> it = cells.iterator(); it.hasNext(); ) {
             Cell cell = it.next();
+            if (cell.isBasic) {
+                it.remove();
+                continue;
+            }
             cell.act();
         }
 
@@ -77,30 +84,43 @@ public class Simulator {
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
                 Location location = new Location(row, col);
-                Cell cell = null;
                 double probability = rand.nextDouble();
-                LifeForms type = getType(probability);
-                switch (type) {
-                    case MYCOPLASMA -> cell = new Mycoplasma(field, location, Color.ORANGE);
-                    case FUNGUS -> cell = new Fungus(field, location, Color.PURPLE);
-                    default -> cell = new Mycoplasma(field, location, Color.GREEN);
-                }
-                if (probability <= type.SPAWN_PROB) {
-                    cells.add(cell);
-                } else {
-                    cell.setDead();
-                    cells.add(cell);
-                }
+                Cell cell = generateLife(getType(probability), location);
+                cells.add(cell);
+            }
+        }
+    }
 
+    private Cell generateLife(LifeForms type, Location location) {
+        switch (type) {
+            case MYCOPLASMA -> {
+                return new Mycoplasma(field, location, Color.ORANGE);
+            }
+            case FUNGUS -> {
+                return new Fungus(field, location, Color.PURPLE);
+            }
+            default -> {
+                Cell ret = new Cell(field, location, Color.WHITE) {
+                    @Override
+                    public void act() {
+                        //basic cell - does nothing.
+                    }
+                };
+                ret.setDead();
+                return ret;
             }
         }
     }
 
     private LifeForms getType(double probability) {
+        if (probability <= LifeForms.FUNGUS.SPAWN_PROB) {
+            return LifeForms.FUNGUS;
+        }
         if (probability <= LifeForms.MYCOPLASMA.SPAWN_PROB) {
             return LifeForms.MYCOPLASMA;
         }
-        return LifeForms.FUNGUS;
+
+        return LifeForms.DEFAULT;
     }
 
     /**
