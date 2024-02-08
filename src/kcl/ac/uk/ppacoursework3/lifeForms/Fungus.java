@@ -4,7 +4,6 @@ import javafx.scene.paint.Color;
 import src.kcl.ac.uk.ppacoursework3.GUI.Field;
 import src.kcl.ac.uk.ppacoursework3.simulation.Cell;
 import src.kcl.ac.uk.ppacoursework3.simulation.Location;
-
 import java.util.List;
 
 public class Fungus extends Cell {

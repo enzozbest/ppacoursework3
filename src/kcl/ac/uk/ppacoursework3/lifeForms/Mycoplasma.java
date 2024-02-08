@@ -19,8 +19,6 @@ import java.util.List;
 
 public class Mycoplasma extends Cell {
 
-    public static final double SPAWN_PROB = 0.25;
-
     /**
      * Create a new Mycoplasma.
      *

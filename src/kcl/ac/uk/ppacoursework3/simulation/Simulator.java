@@ -27,6 +27,8 @@ public class Simulator {
     private final Field field;
     private int generation;
 
+    public static final double GRID_SPAWN = 0.30;
+
     /**
      * Construct a simulation field with default size.
      */
@@ -92,18 +94,23 @@ public class Simulator {
     }
 
     private Cell generateLife(LifeForms type, Location location) {
+        double spawn = (new Random().nextDouble());
         switch (type) {
             case MYCOPLASMA -> {
-                return new Mycoplasma(field, location, Color.ORANGE);
+                Mycoplasma myco = new Mycoplasma(field, location, Color.ORANGE);
+                if(spawn > GRID_SPAWN)  myco.setDead();
+                return myco;
             }
             case FUNGUS -> {
-                return new Fungus(field, location, Color.PURPLE);
+                Fungus fung = new Fungus(field, location, Color.PURPLE);
+                if(spawn > GRID_SPAWN) fung.setDead();
+                return fung;
             }
             default -> {
-                Cell ret = new Cell(field, location, Color.WHITE) {
+                Cell ret = new Cell(field, location, Color.GREEN) {
                     @Override
                     public void act() {
-                        //basic cell - does nothing.
+                        generateLife(getType((new Random()).nextDouble()), getLocation());
                     }
                 };
                 ret.setDead();
@@ -116,7 +123,7 @@ public class Simulator {
         if (probability <= LifeForms.FUNGUS.SPAWN_PROB) {
             return LifeForms.FUNGUS;
         }
-        if (probability <= LifeForms.MYCOPLASMA.SPAWN_PROB) {
+        if (probability <= LifeForms.MYCOPLASMA.SPAWN_PROB + LifeForms.FUNGUS.SPAWN_PROB) {
             return LifeForms.MYCOPLASMA;
         }
 
