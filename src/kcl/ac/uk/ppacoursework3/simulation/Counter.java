@@ -11,13 +11,14 @@ package src.kcl.ac.uk.ppacoursework3.simulation;
  */
 
 public class Counter {
-    
-    private String name;
+
+    private final String name;
     private int count;
 
     /**
      * Provide a name for one of the simulation types.
-     * @param name  A class of life
+     *
+     * @param name A class of life
      */
     public Counter(String name) {
         this.name = name;
