@@ -24,7 +24,7 @@ public class Simulator {
     private final Field field;
     private int generation;
 
-    public static final double GRID_SPAWN = 0.30;
+    public static final double GRID_SPAWN = 0.80;
 
     /**
      * Construct a simulation field with default size.
@@ -78,12 +78,18 @@ public class Simulator {
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
                 Location location = new Location(row, col);
-                Cell cell = generateLife(getType(new int[]{10, 12, 18}), location);
+                Cell cell = generateLife(getType(new int[]{40, 40, 20}), location);
                 cells.add(cell);
             }
         }
     }
 
+    /**
+     * Given a type and a location, replace the cell in that location with an organism of the given type.
+     * @param type meaning which organism it will become
+     * @param location position in grid where to put this new organism.
+     * @return an organism of the specified type
+     **/
     private Cell generateLife(LifeForms type, Location location) {
         double spawn = Randomizer.getRandom().nextDouble();
         switch (type) {
@@ -101,7 +107,7 @@ public class Simulator {
                 Cell ret = new Cell(field, location, Color.GREEN) {
                     @Override
                     public void act() {
-                        generateLife(mutate(spreadProbabilities(this), this), getLocation());
+                        generateLife(mutate(Counter.neighbourTypeCount(this), this), getLocation());
                     }
                 };
                 ret.setDead();
@@ -110,23 +116,6 @@ public class Simulator {
         }
     }
 
-    private HashMap<Class<? extends Cell>, Integer> spreadProbabilities(Cell cell) {
-        if (!cell.isBasic) {
-            return null;
-        }
-        HashMap<Class<? extends Cell>, Integer> typeCount = new HashMap<>();
-        List<Cell> neighbours = cell.getField().getLivingNeighbours(cell.getLocation());
-
-        for (Cell neighbour : neighbours) {
-            if (!typeCount.containsKey(neighbour.getClass())) {
-                typeCount.put(neighbour.getClass(), 1);
-                continue;
-            }
-            Integer newCount = typeCount.get(neighbour.getClass()) + 1;
-            typeCount.put(neighbour.getClass(), newCount);
-        }
-        return typeCount;
-    }
 
     public LifeForms mutate(HashMap<Class<? extends Cell>, Integer> typeCount, Cell cell) {
         Random rand = Randomizer.getRandom();
@@ -154,6 +143,11 @@ public class Simulator {
         return LifeForms.DEFAULT;
     }
 
+    /**
+     * Given an initial set of ratios, choose with a bias of those ratios a type for an organism.
+     * @param ratio a set of numbers representing the ratio of each type
+     * @return a type of organism
+     * */
     private LifeForms getType(int[] ratio) {
         Random rand = Randomizer.getRandom();
         int chosen = rand.nextInt(Arrays.stream(ratio).sum());
