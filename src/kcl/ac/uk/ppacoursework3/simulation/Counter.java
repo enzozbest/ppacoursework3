@@ -1,5 +1,8 @@
 package src.kcl.ac.uk.ppacoursework3.simulation;
 
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * Provide a counter for a participant in the simulation.
  * This includes an identifying string and a count of how
@@ -23,6 +26,29 @@ public class Counter {
     public Counter(String name) {
         this.name = name;
         count = 0;
+    }
+
+    /**
+     * Given a cell, count how many living neighbours of each type it has got.
+     * @param cell whose neighbours you wish to count.
+     * @return a hashmap of cell types mapped to their count.
+     **/
+    public static HashMap<Class<? extends Cell>, Integer> neighbourTypeCount(Cell cell) {
+        if (!cell.isBasic) {
+            return null;
+        }
+        HashMap<Class<? extends Cell>, Integer> typeCount = new HashMap<>();
+        List<Cell> neighbours = cell.getField().getLivingNeighbours(cell.getLocation());
+
+        for (Cell neighbour : neighbours) {
+            if (!typeCount.containsKey(neighbour.getClass())) {
+                typeCount.put(neighbour.getClass(), 1);
+                continue;
+            }
+            Integer newCount = typeCount.get(neighbour.getClass()) + 1;
+            typeCount.put(neighbour.getClass(), newCount);
+        }
+        return typeCount;
     }
 
     /**
