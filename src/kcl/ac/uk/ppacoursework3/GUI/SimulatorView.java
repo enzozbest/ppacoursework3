@@ -81,7 +81,7 @@ public class SimulatorView extends Application {
 
         stage.show();
 
-        simulate(1000000000);
+        //  simulate(1000000000);
     }
 
     /**

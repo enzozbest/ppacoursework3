@@ -6,6 +6,7 @@ import src.kcl.ac.uk.ppacoursework3.GUI.SimulatorView;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.Fungus;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.LifeForms;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.Mycoplasma;
+import src.kcl.ac.uk.ppacoursework3.maths.AliasSampler;
 
 import java.util.*;
 
@@ -78,7 +79,7 @@ public class Simulator {
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
                 Location location = new Location(row, col);
-                Cell cell = generateLife(getType(new int[]{10, 12, 18}), location);
+                Cell cell = generateLife((new AliasSampler()).nextSample(), location);
                 cells.add(cell);
             }
         }
@@ -101,7 +102,7 @@ public class Simulator {
                 Cell ret = new Cell(field, location, Color.GREEN) {
                     @Override
                     public void act() {
-                        generateLife(mutate(spreadProbabilities(this), this), getLocation());
+                        generateLife(mutate(getNeighbourTypesCount(this), this), getLocation());
                     }
                 };
                 ret.setDead();
@@ -110,7 +111,7 @@ public class Simulator {
         }
     }
 
-    private HashMap<Class<? extends Cell>, Integer> spreadProbabilities(Cell cell) {
+    private HashMap<Class<? extends Cell>, Integer> getNeighbourTypesCount(Cell cell) {
         if (!cell.isBasic) {
             return null;
         }
