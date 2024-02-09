@@ -6,7 +6,6 @@ import src.kcl.ac.uk.ppacoursework3.GUI.SimulatorView;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.Fungus;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.LifeForms;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.Mycoplasma;
-import src.kcl.ac.uk.ppacoursework3.maths.AliasSampler;
 
 import java.util.*;
 
@@ -79,7 +78,8 @@ public class Simulator {
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
                 Location location = new Location(row, col);
-                Cell cell = generateLife((new AliasSampler()).nextSample(), location);
+                Cell cell = generateLife(getType(new int[]{10, 12, 18}), location);
+                //Cell cell = generateLife((new AliasSampler()).nextSample(), location);
                 cells.add(cell);
             }
         }
@@ -102,7 +102,8 @@ public class Simulator {
                 Cell ret = new Cell(field, location, Color.GREEN) {
                     @Override
                     public void act() {
-                        generateLife(mutate(getNeighbourTypesCount(this), this), getLocation());
+                        //generateLife((new AliasSampler(getProbabilities(Counter.neighbourTypeCount(this), this))).nextSample(), getLocation());
+                        generateLife(mutate(Counter.neighbourTypeCount(this), this), getLocation());
                     }
                 };
                 ret.setDead();
@@ -111,24 +112,18 @@ public class Simulator {
         }
     }
 
-    private HashMap<Class<? extends Cell>, Integer> getNeighbourTypesCount(Cell cell) {
-        if (!cell.isBasic) {
-            return null;
-        }
-        HashMap<Class<? extends Cell>, Integer> typeCount = new HashMap<>();
-        List<Cell> neighbours = cell.getField().getLivingNeighbours(cell.getLocation());
+    private double[] getProbabilities(HashMap<Class<? extends Cell>, Integer> neighbourCount, Cell cell) {
+        int totalNeighbours = cell.getField().adjacentLocations(cell.getLocation()).size();
+        double[] probs = new double[neighbourCount.values().size()];
 
-        for (Cell neighbour : neighbours) {
-            if (!typeCount.containsKey(neighbour.getClass())) {
-                typeCount.put(neighbour.getClass(), 1);
-                continue;
-            }
-            Integer newCount = typeCount.get(neighbour.getClass()) + 1;
-            typeCount.put(neighbour.getClass(), newCount);
+        for (int i = 0; i < neighbourCount.values().size(); i++) {
+            int temp = (int) neighbourCount.values().toArray()[i];
+            probs[i] = (double) temp / totalNeighbours;
         }
-        return typeCount;
+        return probs;
     }
 
+    @Deprecated
     public LifeForms mutate(HashMap<Class<? extends Cell>, Integer> typeCount, Cell cell) {
         Random rand = Randomizer.getRandom();
         int chosen = rand.nextInt(field.adjacentLocations(cell.getLocation()).size() + 1);
@@ -155,6 +150,7 @@ public class Simulator {
         return LifeForms.DEFAULT;
     }
 
+    @Deprecated
     private LifeForms getType(int[] ratio) {
         Random rand = Randomizer.getRandom();
         int chosen = rand.nextInt(Arrays.stream(ratio).sum());

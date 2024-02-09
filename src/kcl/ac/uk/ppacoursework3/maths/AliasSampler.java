@@ -50,6 +50,7 @@ public class AliasSampler {
     }
 
     public LifeForms nextSample() {
+        if (probability.length == 0) return LifeForms.DEFAULT; //@enzozbest: May be problematic? Not sure...
         int column = rand.nextInt(probability.length);
         boolean coinToss = rand.nextDouble() < probability[column];
         int id = coinToss ? column : alias[column];

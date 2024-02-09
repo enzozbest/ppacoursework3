@@ -2,7 +2,7 @@ package src.kcl.ac.uk.ppacoursework3.lifeForms;
 
 
 public enum LifeForms {
-    MYCOPLASMA(0), FUNGUS(1), DEFAULT(-1);
+    MYCOPLASMA(1), FUNGUS(0), DEFAULT(-1);
 
     int ID;
 
