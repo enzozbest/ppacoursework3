@@ -30,6 +30,7 @@ public class Counter {
 
     /**
      * Given a cell, count how many living neighbours of each type it has got.
+     *
      * @param cell whose neighbours you wish to count.
      * @return a hashmap of cell types mapped to their count.
      **/

@@ -8,25 +8,28 @@ import java.util.Random;
 /**
  * This class represents a sampler from a biased distribution.
  * The Alias method is used to choose a number from a list each with a given bias.
- * These numbers, in this project, are used as indexes into an Enum (LifeForms), which contains the enumeration of all the Life forms implemented.
+ * These numbers, in this project, are used as indexes into an Enum (LifeForms), which contains the enumeration
+ * of all the Life forms implemented.
  * The user can call the getType() method from this class to choose a random LifeForm with specified biases.
  * <p></p>
- * The Sampler functional interface is used here to indicate this class accepts lambda expressions. It also serves to tag this class
- * for the Strategy design pattern.
- * <p></p>
- * In this project, this class is strictly used with either the default biases or with biases generated automatically for each living cells based on
- * their living neighbours at each generation.
+ * In this project, this class is strictly used with either the default biases or with biases generated automatically f
+ * or each living cells based on heir living neighbours at each generation.
  *
  * @author Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
  * @version 2024.02.12
  */
-public class AliasSampler{
+public class AliasSampler {
 
     private final int[] alias;
     private final double[] probability;
     private final Random rand;
 
     /**
+     * Build an AliasSampler object by:
+     * 1. Creating an alias table
+     * 2. Categorising elements as "underfull", "overfull", and "exactly full".
+     * 3. Balance the probabilities until everything is "exactly full"
+     * 4. Fill in remaining probabilities if there are any left.
      *
      * @param probabilities the desired array of biases
      */
@@ -75,6 +78,7 @@ public class AliasSampler{
     /**
      * Once the object is create, this method can be called to choose one number based on the specified biases.
      * This will return an integer value that can then be further manipulated to get, for example, a LifeForms constant.
+     *
      * @return the chosen integer
      */
     public int sample() {

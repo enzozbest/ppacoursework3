@@ -18,7 +18,7 @@ import src.kcl.ac.uk.ppacoursework3.simulation.Simulator;
  * setColor method.
  *
  * @author David J. Barnes, Michael Kölling & Jeffery Raphael, Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
- * @version 2024.02.03
+ * @version 2024.02.12
  */
 
 public class SimulatorView extends Application {
@@ -42,7 +42,7 @@ public class SimulatorView extends Application {
 
     /**
      * Create a view of the given width and height.
-     * */
+     */
 
     @Override
     public void start(Stage stage) {

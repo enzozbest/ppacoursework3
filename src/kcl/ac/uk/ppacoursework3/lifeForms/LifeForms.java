@@ -1,6 +1,5 @@
 package src.kcl.ac.uk.ppacoursework3.lifeForms;
 
-
 /**
  * This enum lists all the possible life forms that any cell can take.
  * Each life form is associated with an integer ID.
@@ -9,6 +8,7 @@ package src.kcl.ac.uk.ppacoursework3.lifeForms;
  * @version 2024.02.12
  */
 public enum LifeForms {
+    
     MYCOPLASMA(1), FUNGUS(0), DEFAULT(-1);
 
     int ID;
@@ -36,6 +36,4 @@ public enum LifeForms {
         }
         return DEFAULT;
     }
-
-
 }

@@ -14,7 +14,7 @@ import java.util.Random;
  * Each position stores a single cell
  *
  * @author David J. Barnes, Michael Kölling & Jeffery Raphael, Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
- * @version 2022.01.06
+ * @version 2024.02.12
  */
 
 public class Field {

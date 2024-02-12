@@ -3,17 +3,18 @@ package src.kcl.ac.uk.ppacoursework3.simulation;
 /**
  * Represent a location in a rectangular grid.
  *
- * @author David J. Barnes and Michael Kölling
+ * @author David J. Barnes and Michael Kölling, Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
  * @version 2024.02.12
  */
 
 public class Location {
 
-    private int row;
-    private int col;
+    private final int row;
+    private final int col;
 
     /**
      * Represent a row and column.
+     *
      * @param row The row.
      * @param col The column.
      */
@@ -26,17 +27,16 @@ public class Location {
      * Implement content equality.
      */
     public boolean equals(Object obj) {
-        if (obj instanceof Location) {
-            Location other = (Location) obj;
+        if (obj instanceof Location other) {
             return row == other.getRow() && col == other.getCol();
-        }
-        else {
+        } else {
             return false;
         }
     }
 
     /**
      * Return a string of the form row,column
+     *
      * @return A string representation of the location.
      */
     public String toString() {
@@ -47,6 +47,7 @@ public class Location {
      * Use the top 16 bits for the row value and the bottom for
      * the column. Except for very big grids, this should give a
      * unique hash code for each (row, col) pair.
+     *
      * @return A hashcode for the location.
      */
     public int hashCode() {
