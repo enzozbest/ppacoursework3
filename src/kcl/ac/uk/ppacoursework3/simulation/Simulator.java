@@ -2,10 +2,10 @@ package src.kcl.ac.uk.ppacoursework3.simulation;
 
 import javafx.scene.paint.Color;
 import src.kcl.ac.uk.ppacoursework3.GUI.Field;
-import src.kcl.ac.uk.ppacoursework3.GUI.SimulatorView;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.Fungus;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.LifeForms;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.Mycoplasma;
+import src.kcl.ac.uk.ppacoursework3.maths.AliasSampler;
 
 import java.util.*;
 
@@ -20,17 +20,21 @@ import java.util.*;
 
 public class Simulator {
 
+
     private final List<Cell> cells;
     private final Field field;
     private int generation;
 
-    public static final double GRID_SPAWN = 0.30;
+    public static final int GRID_WIDTH = 100;
+    public static final int GRID_HEIGHT = 80;
+
+    public static final double GRID_SPAWN = 0.50;
 
     /**
      * Construct a simulation field with default size.
      */
     public Simulator() {
-        this(SimulatorView.GRID_HEIGHT, SimulatorView.GRID_WIDTH);
+        this(GRID_HEIGHT, GRID_WIDTH);
     }
 
     /**
@@ -51,8 +55,7 @@ public class Simulator {
      */
     public void simOneGeneration() {
         generation++;
-        for (Iterator<Cell> it = cells.iterator(); it.hasNext(); ) {
-            Cell cell = it.next();
+        for (Cell cell : cells) {
             cell.act();
         }
 
@@ -78,8 +81,9 @@ public class Simulator {
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
                 Location location = new Location(row, col);
-                Cell cell = generateLife(getType(new int[]{10, 12, 18}), location);
-                //Cell cell = generateLife((new AliasSampler()).nextSample(), location);
+                //Cell cell = generateLife(getType(new int[]{10, 12, 18}), location);
+                AliasSampler sampler = new AliasSampler();
+                Cell cell = generateLife((sampler.getType(sampler.sample())), location);
                 cells.add(cell);
             }
         }
@@ -99,17 +103,23 @@ public class Simulator {
                 return fung;
             }
             default -> {
-                Cell ret = new Cell(field, location, Color.GREEN) {
-                    @Override
-                    public void act() {
-                        //generateLife((new AliasSampler(getProbabilities(Counter.neighbourTypeCount(this), this))).nextSample(), getLocation());
-                        generateLife(mutate(Counter.neighbourTypeCount(this), this), getLocation());
-                    }
-                };
-                ret.setDead();
+                Cell ret = createDefaultCell(location);
                 return ret;
             }
         }
+    }
+
+    private Cell createDefaultCell(Location location) {
+        Cell ret = new Cell(field, location, Color.GREEN) {
+            @Override
+            public void act() {
+                AliasSampler sampler = new AliasSampler(getProbabilities(Counter.neighbourTypeCount(this), this));
+                generateLife((sampler.getType(sampler.sample())), getLocation());
+                //generateLife(mutate(Counter.neighbourTypeCount(this), this), getLocation());
+            }
+        };
+        ret.setDead();
+        return ret;
     }
 
     private double[] getProbabilities(HashMap<Class<? extends Cell>, Integer> neighbourCount, Cell cell) {
@@ -179,6 +189,7 @@ public class Simulator {
         }
 
     }
+
 
     public Field getField() {
         return field;

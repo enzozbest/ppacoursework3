@@ -15,8 +15,8 @@ import java.util.HashMap;
  */
 
 public class FieldStats {
-    
-    private HashMap<Class, Counter> counters;
+
+    private final HashMap<Class, Counter> counters;
     private boolean countsValid;
 
     /**
@@ -30,6 +30,7 @@ public class FieldStats {
 
     /**
      * Get details of what is in the field.
+     *
      * @return A string describing what is in the field.
      */
     public String getPopulationDetails(Field field) {
@@ -61,6 +62,7 @@ public class FieldStats {
 
     /**
      * Increment the count for one class of life
+     *
      * @param cellClass The class of cell to increment.
      */
     public void incrementCount(Class cellClass) {
@@ -84,6 +86,7 @@ public class FieldStats {
     /**
      * Determine whether the simulation is still viable.
      * I.e., should it continue to run.
+     *
      * @return true If there is more than one life form alive
      */
     public boolean isViable(Field field) {
@@ -104,6 +107,7 @@ public class FieldStats {
     /**
      * Generate counts of the number of cells.
      * These are not kept up to date.
+     *
      * @param field The field to generate the stats for.
      */
     private void generateCounts(Field field) {

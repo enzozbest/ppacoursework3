@@ -23,10 +23,10 @@ import src.kcl.ac.uk.ppacoursework3.simulation.Simulator;
 
 public class SimulatorView extends Application {
 
-    public static final int GRID_WIDTH = 100;
-    public static final int GRID_HEIGHT = 80;
+
     public static final int WIN_WIDTH = 650;
     public static final int WIN_HEIGHT = 650;
+    private Thread simulationThread;
 
     private static final Color EMPTY_COLOR = Color.WHITE;
 
@@ -39,6 +39,7 @@ public class SimulatorView extends Application {
     private FieldStats stats;
     private Simulator simulator;
 
+
     /**
      * Create a view of the given width and height.
      *
@@ -50,7 +51,7 @@ public class SimulatorView extends Application {
 
         stats = new FieldStats();
         fieldCanvas = new FieldCanvas(WIN_WIDTH - 50, WIN_HEIGHT - 50);
-        fieldCanvas.setScale(GRID_HEIGHT, GRID_WIDTH);
+        fieldCanvas.setScale(Simulator.GRID_HEIGHT, Simulator.GRID_WIDTH);
         simulator = new Simulator();
 
         Group root = new Group();
@@ -81,7 +82,7 @@ public class SimulatorView extends Application {
 
         stage.show();
 
-        //simulate(1);
+        simulate(100000);
     }
 
     /**
@@ -135,17 +136,17 @@ public class SimulatorView extends Application {
      * @param numGenerations The number of generations to run for.
      */
     public void simulate(int numGenerations) {
-        new Thread(() -> {
-
+        simulationThread = new Thread(() -> {
             for (int gen = 1; gen <= numGenerations; gen++) {
                 simulator.simOneGeneration();
-                simulator.delay(500);
+                simulator.delay(1000);
                 Platform.runLater(() -> {
                     updateCanvas(simulator.getGeneration(), simulator.getField());
                 });
             }
 
-        }).start();
+        });
+        simulationThread.start();
     }
 
     /**
@@ -154,6 +155,10 @@ public class SimulatorView extends Application {
     public void reset() {
         simulator.reset();
         updateCanvas(simulator.getGeneration(), simulator.getField());
+    }
+
+    public Thread getSimulationThread() {
+        return simulationThread;
     }
 
     public static void main(String[] args) {
