@@ -13,7 +13,7 @@ import java.util.Random;
  * Represent a rectangular grid of field positions.
  * Each position stores a single cell
  *
- * @author David J. Barnes, Michael Kölling & Jeffery Raphael
+ * @author David J. Barnes, Michael Kölling & Jeffery Raphael, Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
  * @version 2022.01.06
  */
 

@@ -13,25 +13,33 @@ import java.util.List;
  * bacteria, they only have 500-1000 genes! For comparison, fruit flies have
  * about 14,000 genes.
  *
- * @author David J. Barnes, Michael Kölling & Jeffery Raphael
- * @version 2022.01.06
+ * @author David J. Barnes, Michael Kölling & Jeffery Raphael, Enzo Bestetti (K23011872),
+ * Krystian Augustynowicz (K23000902)
+ * @version 2024.02.12
  */
 
 public class Mycoplasma extends Cell {
 
     /**
-     * Create a new Mycoplasma.
+     * Create a new Mycoplasma. The default spawning colour of Mycoplasma is Color.ORANGE
      *
      * @param field    The field currently occupied.
      * @param location The location within the field.
      */
-    public Mycoplasma(Field field, Location location, Color col) {
+    public Mycoplasma(Field field, Location location) {
+        this(field,location, Color.ORANGE);
+    }
+
+    private Mycoplasma(Field field, Location location, Color col) {
         super(field, location, col);
         isBasic = false;
     }
 
     /**
-     * This is how the Mycoplasma decides if it's alive or not
+     * Rule set for this Life form:
+     * 1. If Mycoplasma is alive and it has both more than 1 and fewer than 3 neighbours,
+     *    it remains alive in the next generation.
+     * 2. If Mycoplasma is dead and it has exactly 3 neighbours, it comes alive in the next generation.
      */
     public void act() {
         List<Cell> neighbours = getSameType();

@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 /**
  * A class representing the shared characteristics of all forms of life
  *
- * @author David J. Barnes, Michael Kölling & Jeffery Raphael
- * @version 2022.01.06
+ * @author David J. Barnes, Michael Kölling & Jeffery Raphael, Enzo Bestetti(K23011872), Krystian Augustynowicz(K23000902)
+ * @version 2024.02.12
  */
 
 public abstract class Cell {

@@ -18,14 +18,18 @@ import java.util.Random;
  * their living neighbours at each generation.
  *
  * @author Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
- * @version 2024.02.11
+ * @version 2024.02.12
  */
-public class AliasSampler implements Sampler {
+public class AliasSampler{
 
     private final int[] alias;
     private final double[] probability;
     private final Random rand;
 
+    /**
+     *
+     * @param probabilities the desired array of biases
+     */
     public AliasSampler(double[] probabilities) {
         rand = Randomizer.getRandom();
         int n = probabilities.length;
@@ -61,11 +65,18 @@ public class AliasSampler implements Sampler {
 
     }
 
+    /**
+     * Generates an AliasSampler object with default biases.
+     */
     public AliasSampler() {
-        this(new double[]{0.3, 0.3, 0.40}); //Creates new sampler with default biases.
+        this(new double[]{0.3, 0.3, 0.40});
     }
 
-    @Override
+    /**
+     * Once the object is create, this method can be called to choose one number based on the specified biases.
+     * This will return an integer value that can then be further manipulated to get, for example, a LifeForms constant.
+     * @return the chosen integer
+     */
     public int sample() {
         if (probability.length == 0) return -1; //@enzozbest: May be problematic? Not sure...
         int column = rand.nextInt(probability.length);
@@ -87,5 +98,4 @@ public class AliasSampler implements Sampler {
         if (type == null) return LifeForms.DEFAULT;
         return type;
     }
-
 }

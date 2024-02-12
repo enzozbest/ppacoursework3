@@ -17,7 +17,7 @@ import src.kcl.ac.uk.ppacoursework3.simulation.Simulator;
  * each location. Colors for each type of life form can be defined using the
  * setColor method.
  *
- * @author David J. Barnes, Michael Kölling & Jeffery Raphael
+ * @author David J. Barnes, Michael Kölling & Jeffery Raphael, Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
  * @version 2024.02.03
  */
 
@@ -42,10 +42,8 @@ public class SimulatorView extends Application {
 
     /**
      * Create a view of the given width and height.
-     *
-     * @param height The simulation's height.
-     * @param width  The simulation's width.
-     */
+     * */
+
     @Override
     public void start(Stage stage) {
 
@@ -83,6 +81,7 @@ public class SimulatorView extends Application {
         stage.show();
 
         simulate(100000);
+
     }
 
     /**
@@ -155,10 +154,6 @@ public class SimulatorView extends Application {
     public void reset() {
         simulator.reset();
         updateCanvas(simulator.getGeneration(), simulator.getField());
-    }
-
-    public Thread getSimulationThread() {
-        return simulationThread;
     }
 
     public static void main(String[] args) {

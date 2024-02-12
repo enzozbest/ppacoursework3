@@ -8,8 +8,8 @@ import java.util.Random;
  * (which helps with testing). Set 'useShared' to false to get different random
  * behaviour every time.
  *
- * @author David J. Barnes and Michael Kölling
- * @version 2016.02.29
+ * @author David J. Barnes and Michael Kölling, Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
+ * @version 2024.02.12
  */
 
 public class Randomizer {

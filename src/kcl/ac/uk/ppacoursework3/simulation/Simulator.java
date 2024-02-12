@@ -2,7 +2,7 @@ package src.kcl.ac.uk.ppacoursework3.simulation;
 
 import javafx.scene.paint.Color;
 import src.kcl.ac.uk.ppacoursework3.GUI.Field;
-import src.kcl.ac.uk.ppacoursework3.lifeForms.Fungus;
+import src.kcl.ac.uk.ppacoursework3.lifeForms.Lycoperdon;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.LifeForms;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.Mycoplasma;
 import src.kcl.ac.uk.ppacoursework3.maths.AliasSampler;
@@ -81,7 +81,6 @@ public class Simulator {
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
                 Location location = new Location(row, col);
-                //Cell cell = generateLife(getType(new int[]{10, 12, 18}), location);
                 AliasSampler sampler = new AliasSampler();
                 Cell cell = generateLife((sampler.getType(sampler.sample())), location);
                 cells.add(cell);
@@ -93,12 +92,12 @@ public class Simulator {
         double spawn = Randomizer.getRandom().nextDouble();
         switch (type) {
             case MYCOPLASMA -> {
-                Mycoplasma myco = new Mycoplasma(field, location, Color.ORANGE);
+                Mycoplasma myco = new Mycoplasma(field, location);
                 if (spawn > GRID_SPAWN) myco.setDead();
                 return myco;
             }
             case FUNGUS -> {
-                Fungus fung = new Fungus(field, location, Color.PURPLE);
+                Lycoperdon fung = new Lycoperdon(field, location);
                 if (spawn > GRID_SPAWN) fung.setDead();
                 return fung;
             }
@@ -115,7 +114,6 @@ public class Simulator {
             public void act() {
                 AliasSampler sampler = new AliasSampler(getProbabilities(Counter.neighbourTypeCount(this), this));
                 generateLife((sampler.getType(sampler.sample())), getLocation());
-                //generateLife(mutate(Counter.neighbourTypeCount(this), this), getLocation());
             }
         };
         ret.setDead();

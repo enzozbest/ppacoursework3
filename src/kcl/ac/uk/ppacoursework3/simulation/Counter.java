@@ -9,8 +9,8 @@ import java.util.List;
  * many participants of this type currently exist within
  * the simulation.
  *
- * @author David J. Barnes and Michael Kölling
- * @version 2016.02.29
+ * @author David J. Barnes and Michael Kölling, Enzo Bestetti(K23011872), Krystian Augustynowicz(K23000902)
+ * @version 2024.02.12
  */
 
 public class Counter {
