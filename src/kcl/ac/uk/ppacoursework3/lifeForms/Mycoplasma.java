@@ -1,8 +1,8 @@
 package src.kcl.ac.uk.ppacoursework3.lifeForms;
 
 import javafx.scene.paint.Color;
-import src.kcl.ac.uk.ppacoursework3.GUI.Field;
 import src.kcl.ac.uk.ppacoursework3.simulation.Cell;
+import src.kcl.ac.uk.ppacoursework3.simulation.Field;
 import src.kcl.ac.uk.ppacoursework3.simulation.Location;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class Mycoplasma extends Cell {
      * @param location The location within the field.
      */
     public Mycoplasma(Field field, Location location) {
-        this(field,location, Color.ORANGE);
+        this(field, location, Color.ORANGE);
     }
 
     private Mycoplasma(Field field, Location location, Color col) {
@@ -38,7 +38,7 @@ public class Mycoplasma extends Cell {
     /**
      * Rule set for this Life form:
      * 1. If Mycoplasma is alive and it has both more than 1 and fewer than 3 neighbours,
-     *    it remains alive in the next generation.
+     * it remains alive in the next generation.
      * 2. If Mycoplasma is dead and it has exactly 3 neighbours, it comes alive in the next generation.
      */
     public void act() {

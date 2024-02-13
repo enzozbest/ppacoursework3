@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import src.kcl.ac.uk.ppacoursework3.simulation.Cell;
+import src.kcl.ac.uk.ppacoursework3.simulation.Field;
 import src.kcl.ac.uk.ppacoursework3.simulation.Simulator;
 
 /**
@@ -26,7 +27,6 @@ public class SimulatorView extends Application {
 
     public static final int WIN_WIDTH = 650;
     public static final int WIN_HEIGHT = 650;
-    private Thread simulationThread;
 
     private static final Color EMPTY_COLOR = Color.WHITE;
 
@@ -37,7 +37,7 @@ public class SimulatorView extends Application {
 
     private FieldCanvas fieldCanvas;
     private FieldStats stats;
-    private Simulator simulator;
+    public static Simulator simulator;
 
 
     /**
@@ -80,7 +80,7 @@ public class SimulatorView extends Application {
 
         stage.show();
 
-        simulate(100000);
+        simulate(10);
 
     }
 
@@ -135,17 +135,14 @@ public class SimulatorView extends Application {
      * @param numGenerations The number of generations to run for.
      */
     public void simulate(int numGenerations) {
-        simulationThread = new Thread(() -> {
-            for (int gen = 1; gen <= numGenerations; gen++) {
+        new Thread(() -> {
+            for (int g = 1; g <= numGenerations; g++) {
                 simulator.simOneGeneration();
-                simulator.delay(1000);
-                Platform.runLater(() -> {
-                    updateCanvas(simulator.getGeneration(), simulator.getField());
-                });
+                simulator.delay(500);
+                Platform.runLater(() -> updateCanvas(simulator.getGeneration(), simulator.getField()));
             }
 
-        });
-        simulationThread.start();
+        }).start();
     }
 
     /**

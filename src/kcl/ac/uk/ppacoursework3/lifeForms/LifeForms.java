@@ -8,8 +8,8 @@ package src.kcl.ac.uk.ppacoursework3.lifeForms;
  * @version 2024.02.12
  */
 public enum LifeForms {
-    
-    MYCOPLASMA(1), FUNGUS(0), DEFAULT(-1);
+
+    MYCOPLASMA(1), LYCOPERDON(0), DEFAULT(-1);
 
     int ID;
 

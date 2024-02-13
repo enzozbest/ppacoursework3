@@ -2,6 +2,7 @@ package src.kcl.ac.uk.ppacoursework3.GUI;
 
 import src.kcl.ac.uk.ppacoursework3.simulation.Cell;
 import src.kcl.ac.uk.ppacoursework3.simulation.Counter;
+import src.kcl.ac.uk.ppacoursework3.simulation.Field;
 
 import java.util.HashMap;
 

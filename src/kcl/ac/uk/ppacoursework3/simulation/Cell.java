@@ -1,7 +1,6 @@
 package src.kcl.ac.uk.ppacoursework3.simulation;
 
 import javafx.scene.paint.Color;
-import src.kcl.ac.uk.ppacoursework3.GUI.Field;
 
 import java.util.List;
 import java.util.stream.Collectors;

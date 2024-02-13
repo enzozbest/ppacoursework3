@@ -1,6 +1,5 @@
 package src.kcl.ac.uk.ppacoursework3.maths;
 
-import src.kcl.ac.uk.ppacoursework3.lifeForms.LifeForms;
 import src.kcl.ac.uk.ppacoursework3.simulation.Randomizer;
 
 import java.util.Random;
@@ -12,8 +11,8 @@ import java.util.Random;
  * of all the Life forms implemented.
  * The user can call the getType() method from this class to choose a random LifeForm with specified biases.
  * <p></p>
- * In this project, this class is strictly used with either the default biases or with biases generated automatically f
- * or each living cells based on heir living neighbours at each generation.
+ * In this project, this class is strictly used with either the default biases or with biases generated automatically
+ * for each living cell based on its living neighbours at each generation.
  *
  * @author Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
  * @version 2024.02.12
@@ -28,8 +27,8 @@ public class AliasSampler {
      * Build an AliasSampler object by:
      * 1. Creating an alias table
      * 2. Categorising elements as "underfull", "overfull", and "exactly full".
-     * 3. Balance the probabilities until everything is "exactly full"
-     * 4. Fill in remaining probabilities if there are any left.
+     * 3. Balancing the probabilities until everything is "exactly full"
+     * 4. Filling in remaining probabilities if there are any left.
      *
      * @param probabilities the desired array of biases
      */
@@ -46,11 +45,11 @@ public class AliasSampler {
 
         for (int i = 0; i < n; i++) {
             weightedProbs[i] = probabilities[i] * n; //Build alias table
-            if (weightedProbs[i] < 1) underfull[smallCount++] = i; //Classify each alias as "underfull" or "overfull"
+            if (weightedProbs[i] < 1) underfull[smallCount++] = i; //Categorise each alias as "underfull" or "overfull"
             else overfull[largeCount++] = i;
         }
 
-        //Balance probabilities until everything is "exactly full" :
+        //Balance probabilities until everything is "exactly full":
         while (smallCount > 0 && largeCount > 0) {
             int lesser = underfull[--smallCount];
             int larger = overfull[--largeCount];
@@ -65,7 +64,6 @@ public class AliasSampler {
         //Fill in remaining probs if there are any:
         while (largeCount > 0) probability[overfull[--largeCount]] = 1;
         while (smallCount > 0) probability[underfull[--smallCount]] = 1;
-
     }
 
     /**
@@ -76,7 +74,7 @@ public class AliasSampler {
     }
 
     /**
-     * Once the object is create, this method can be called to choose one number based on the specified biases.
+     * Once the object is created, this method can be called to choose one number based on the specified biases.
      * This will return an integer value that can then be further manipulated to get, for example, a LifeForms constant.
      *
      * @return the chosen integer
@@ -89,17 +87,5 @@ public class AliasSampler {
         if (coinToss) return column;
 
         return alias[column];
-    }
-
-    /**
-     * Given an integer ID, return the enum constant from LifeForms associated with this id.
-     *
-     * @param id the integer ID to lookup.
-     * @return the LifeForm constant associated with that ID.
-     **/
-    public LifeForms getType(int id) {
-        LifeForms type = LifeForms.getByID(id);
-        if (type == null) return LifeForms.DEFAULT;
-        return type;
     }
 }

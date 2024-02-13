@@ -1,7 +1,6 @@
 package src.kcl.ac.uk.ppacoursework3.simulation;
 
 import javafx.scene.paint.Color;
-import src.kcl.ac.uk.ppacoursework3.GUI.Field;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.LifeForms;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.Lycoperdon;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.Mycoplasma;
@@ -10,6 +9,7 @@ import src.kcl.ac.uk.ppacoursework3.maths.AliasSampler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -59,9 +59,6 @@ public class Simulator {
         generation++;
         for (Cell cell : cells) {
             cell.act();
-        }
-
-        for (Cell cell : cells) {
             cell.updateState();
         }
     }
@@ -84,7 +81,7 @@ public class Simulator {
             for (int col = 0; col < field.getWidth(); col++) {
                 Location location = new Location(row, col);
                 AliasSampler sampler = new AliasSampler();
-                Cell cell = generateLife((sampler.getType(sampler.sample())), location);
+                Cell cell = generateLife((LifeForms.getByID(sampler.sample())), location);
                 cells.add(cell);
             }
         }
@@ -105,7 +102,7 @@ public class Simulator {
                 if (spawn > GRID_SPAWN) myco.setDead();
                 return myco;
             }
-            case FUNGUS -> {
+            case LYCOPERDON -> {
                 Lycoperdon fung = new Lycoperdon(field, location);
                 if (spawn > GRID_SPAWN) fung.setDead();
                 return fung;
@@ -133,8 +130,8 @@ public class Simulator {
         Cell ret = new Cell(field, location, Color.GREEN) {
             @Override
             public void act() {
-                AliasSampler sampler = new AliasSampler(getProbabilities(Counter.neighbourTypeCount(this), this));
-                generateLife((sampler.getType(sampler.sample())), getLocation());
+                AliasSampler sampler = new AliasSampler(getProbabilities(Objects.requireNonNull(Counter.neighbourTypeCount(this)), this));
+                generateLife(LifeForms.getByID(sampler.sample()), getLocation());
             }
         };
         ret.setDead();
