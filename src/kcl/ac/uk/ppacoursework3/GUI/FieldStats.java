@@ -67,13 +67,9 @@ public class FieldStats {
      * @param cellClass The class of cell to increment.
      */
     public void incrementCount(Class cellClass) {
-        Counter count = counters.get(cellClass);
+        Counter count = counters.computeIfAbsent(cellClass, c -> new Counter(c.getName()));
 
-        if (count == null) {
-            // We do not have a counter for this species yet. Create one.
-            count = new Counter(cellClass.getName());
-            counters.put(cellClass, count);
-        }
+        // We do not have a counter for this species yet. Create one.
         count.increment();
     }
 
@@ -116,10 +112,7 @@ public class FieldStats {
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
                 Cell cell = field.getObjectAt(row, col);
-
-                if (cell != null) {
-                    incrementCount(cell.getClass());
-                }
+                incrementCount(cell.getClass());
             }
         }
         countsValid = true;

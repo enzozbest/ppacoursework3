@@ -2,6 +2,7 @@ package src.kcl.ac.uk.ppacoursework3.GUI;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -9,6 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import src.kcl.ac.uk.ppacoursework3.concurrent.GenerationTracker;
 import src.kcl.ac.uk.ppacoursework3.simulation.Cell;
 import src.kcl.ac.uk.ppacoursework3.simulation.Field;
 import src.kcl.ac.uk.ppacoursework3.simulation.Simulator;
@@ -38,7 +40,6 @@ public class SimulatorView extends Application {
     private FieldCanvas fieldCanvas;
     private FieldStats stats;
     public static Simulator simulator;
-
 
     /**
      * Create a view of the given width and height.
@@ -84,6 +85,7 @@ public class SimulatorView extends Application {
 
     }
 
+
     /**
      * Display a short information label at the top of the window.
      */
@@ -100,7 +102,7 @@ public class SimulatorView extends Application {
     public void updateCanvas(int generation, Field field) {
         genLabel.setText(GENERATION_PREFIX + generation);
         stats.reset();
-
+        //System.out.println(generation);
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
                 Cell cell = field.getObjectAt(row, col);
@@ -135,14 +137,19 @@ public class SimulatorView extends Application {
      * @param numGenerations The number of generations to run for.
      */
     public void simulate(int numGenerations) {
-        new Thread(() -> {
-            for (int g = 1; g <= numGenerations; g++) {
-                simulator.simOneGeneration();
-                simulator.delay(500);
-                Platform.runLater(() -> updateCanvas(simulator.getGeneration(), simulator.getField()));
+        Task<Void> simulation = new Task<Void>() {
+            @Override
+            protected Void call() {
+                for (int g = 1; g <= numGenerations; g++) {
+                    simulator.simOneGeneration();
+                    simulator.delay(1000);
+                    Platform.runLater(() -> updateCanvas(simulator.getGeneration(), simulator.getField())); //Updates the GUI
+                    simulator.delay(1); //ensures the GUI has time to update before simulating the next generation.
+                }
+                return null;
             }
-
-        }).start();
+        };
+        GenerationTracker.executor.submit(simulation);
     }
 
     /**
@@ -153,7 +160,13 @@ public class SimulatorView extends Application {
         updateCanvas(simulator.getGeneration(), simulator.getField());
     }
 
+    /**
+     * Begin JavaFX application.
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }
+
 }

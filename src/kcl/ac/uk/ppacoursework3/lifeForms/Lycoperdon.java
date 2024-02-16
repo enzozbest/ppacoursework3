@@ -16,6 +16,9 @@ import java.util.concurrent.Future;
  * This class models this behaviour:
  * Once this Life form has more than 3 neighbours it "bursts", which is modelled as a change of colour.
  * After the Lycoperdon has burst, it takes 3 generations for it to refill. Once it is refilled, it can burst again.
+ * <p></p>
+ * To maintain fidelity to the original Conway's game of Life, the rules determining the cell's next state are the same
+ * as the originally described rules.
  *
  * @author Enzo Bestetti (K23011872), Krystian Augustynowicz(K23000902)
  * @version 2024.02.13
@@ -26,7 +29,7 @@ public class Lycoperdon extends Cell {
 
     private GenerationTracker genTracker;
 
-    private Future state;
+    private Future future;
 
     /**
      * Create a new Lycoperdon cell. The spawning colour of the Lycoperdon is Color.PURPLE)
@@ -66,11 +69,10 @@ public class Lycoperdon extends Cell {
             if (colisionCount >= 3) {
                 setColor(Color.GREEN);
                 genTracker = new GenerationTracker(SimulatorView.simulator.getGeneration(), 3); //Begin a generation counter
-                genTracker.start();
+                future = genTracker.run();
             }
         } else {
-            state = genTracker.getFuture();
-            if (state != null) {
+            if (future != null && future.isDone()) {
                 setColor(Color.PURPLE);
             }
         }
