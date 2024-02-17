@@ -7,10 +7,7 @@ package src.kcl.ac.uk.ppacoursework3.simulation;
  * @version 2024.02.12
  */
 
-public class Location {
-
-    private final int row;
-    private final int col;
+public record Location(int row, int col) {
 
     /**
      * Represent a row and column.
@@ -18,9 +15,7 @@ public class Location {
      * @param row The row.
      * @param col The column.
      */
-    public Location(int row, int col) {
-        this.row = row;
-        this.col = col;
+    public Location {
     }
 
     /**
@@ -28,7 +23,7 @@ public class Location {
      */
     public boolean equals(Object obj) {
         if (obj instanceof Location other) {
-            return row == other.getRow() && col == other.getCol();
+            return row == other.row() && col == other.col();
         } else {
             return false;
         }
@@ -57,14 +52,16 @@ public class Location {
     /**
      * @return The row.
      */
-    public int getRow() {
+    @Override
+    public int row() {
         return row;
     }
 
     /**
      * @return The column.
      */
-    public int getCol() {
+    @Override
+    public int col() {
         return col;
     }
 }

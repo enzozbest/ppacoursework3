@@ -1,7 +1,6 @@
 package src.kcl.ac.uk.ppacoursework3.lifeForms;
 
 import javafx.scene.paint.Color;
-import src.kcl.ac.uk.ppacoursework3.simulation.Cell;
 import src.kcl.ac.uk.ppacoursework3.simulation.Field;
 import src.kcl.ac.uk.ppacoursework3.simulation.Location;
 
@@ -21,7 +20,8 @@ import java.util.List;
 public class Mycoplasma extends Cell {
 
     /**
-     * Create a new Mycoplasma. The default spawning colour of Mycoplasma is Color.ORANGE
+     * Create a new Mycoplasma with a default colour.
+     * The default spawning colour of Mycoplasma is Color.ORANGE
      *
      * @param field    The field currently occupied.
      * @param location The location within the field.
@@ -30,6 +30,14 @@ public class Mycoplasma extends Cell {
         this(field, location, Color.ORANGE);
     }
 
+    /**
+     * Create a new Mycoplasma with a specified colour by calling the superclass constructor.
+     * Initialise fields and set this cell as a non-basic life form.
+     *
+     * @param field
+     * @param location
+     * @param col
+     */
     private Mycoplasma(Field field, Location location, Color col) {
         super(field, location, col);
         isBasic = false;

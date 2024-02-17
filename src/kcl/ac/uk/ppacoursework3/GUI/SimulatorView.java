@@ -11,14 +11,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import src.kcl.ac.uk.ppacoursework3.concurrent.GenerationTracker;
-import src.kcl.ac.uk.ppacoursework3.simulation.Cell;
+import src.kcl.ac.uk.ppacoursework3.lifeForms.Cell;
 import src.kcl.ac.uk.ppacoursework3.simulation.Field;
 import src.kcl.ac.uk.ppacoursework3.simulation.Simulator;
 
 /**
  * A graphical view of the simulation grid. The view displays a rectangle for
- * each location. Colors for each type of life form can be defined using the
- * setColor method.
+ * each location. Each rectangle is colored according to the state of the
+ * cell at a given location.
  *
  * @author David J. Barnes, Michael Kölling & Jeffery Raphael, Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
  * @version 2024.02.12
@@ -29,14 +29,10 @@ public class SimulatorView extends Application {
 
     public static final int WIN_WIDTH = 650;
     public static final int WIN_HEIGHT = 650;
-
     private static final Color EMPTY_COLOR = Color.WHITE;
-
     private final String GENERATION_PREFIX = "Generation: ";
     private final String POPULATION_PREFIX = "Population: ";
-
     private Label genLabel, population, infoLabel;
-
     private FieldCanvas fieldCanvas;
     private FieldStats stats;
     public static Simulator simulator;
@@ -44,16 +40,14 @@ public class SimulatorView extends Application {
     /**
      * Create a view of the given width and height.
      */
-
     @Override
     public void start(Stage stage) {
-
         stats = new FieldStats();
         fieldCanvas = new FieldCanvas(WIN_WIDTH - 50, WIN_HEIGHT - 50);
-        fieldCanvas.setScale(Simulator.GRID_HEIGHT, Simulator.GRID_WIDTH);
         simulator = new Simulator();
-
         Group root = new Group();
+
+        fieldCanvas.setScale(Simulator.GRID_HEIGHT, Simulator.GRID_WIDTH);
 
         genLabel = new Label(GENERATION_PREFIX);
         infoLabel = new Label("  ");
@@ -62,7 +56,6 @@ public class SimulatorView extends Application {
         BorderPane bPane = new BorderPane();
         HBox infoPane = new HBox();
         HBox popPane = new HBox();
-
 
         infoPane.setSpacing(10);
         infoPane.getChildren().addAll(genLabel, infoLabel);
@@ -81,10 +74,8 @@ public class SimulatorView extends Application {
 
         stage.show();
 
-        simulate(10);
-
+        simulate(1000);
     }
-
 
     /**
      * Display a short information label at the top of the window.
@@ -106,7 +97,6 @@ public class SimulatorView extends Application {
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
                 Cell cell = field.getObjectAt(row, col);
-
                 if (cell.isAlive()) {
                     stats.incrementCount(cell.getClass());
                     fieldCanvas.drawMark(col, row, cell.getColor());
@@ -115,7 +105,6 @@ public class SimulatorView extends Application {
                 }
             }
         }
-
         stats.countFinished();
         population.setText(POPULATION_PREFIX + stats.getPopulationDetails(field));
     }
@@ -137,12 +126,12 @@ public class SimulatorView extends Application {
      * @param numGenerations The number of generations to run for.
      */
     public void simulate(int numGenerations) {
-        Task<Void> simulation = new Task<Void>() {
+        Task<Void> simulation = new Task<>() {
             @Override
             protected Void call() {
                 for (int g = 1; g <= numGenerations; g++) {
                     simulator.simOneGeneration();
-                    simulator.delay(1000);
+                    simulator.delay(500);
                     Platform.runLater(() -> updateCanvas(simulator.getGeneration(), simulator.getField())); //Updates the GUI
                     simulator.delay(1); //ensures the GUI has time to update before simulating the next generation.
                 }

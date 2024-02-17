@@ -1,5 +1,8 @@
 package src.kcl.ac.uk.ppacoursework3.simulation;
 
+import src.kcl.ac.uk.ppacoursework3.lifeForms.Cell;
+import src.kcl.ac.uk.ppacoursework3.utils.Randomizer;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,7 +15,6 @@ import java.util.Random;
  * @author David J. Barnes, Michael Kölling & Jeffery Raphael, Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
  * @version 2024.02.12
  */
-
 public class Field {
     private static final Random rand = Randomizer.getRandom();
     private final int depth;
@@ -48,7 +50,7 @@ public class Field {
      * @param location The location to clear.
      */
     public void clear(Location location) {
-        field[location.getRow()][location.getCol()] = null;
+        field[location.row()][location.col()] = null;
     }
 
     /**
@@ -71,7 +73,7 @@ public class Field {
      * @param location Where to place the cell.
      */
     public void place(Cell cell, Location location) {
-        field[location.getRow()][location.getCol()] = cell;
+        field[location.row()][location.col()] = cell;
     }
 
     /**
@@ -81,7 +83,7 @@ public class Field {
      * @return The cell at the given location, or null if there is none.
      */
     public Cell getObjectAt(Location location) {
-        return getObjectAt(location.getRow(), location.getCol());
+        return getObjectAt(location.row(), location.col());
     }
 
     /**
@@ -122,8 +124,8 @@ public class Field {
         // The list of locations to be returned.
         List<Location> locations = new LinkedList<>();
         if (location != null) {
-            int row = location.getRow();
-            int col = location.getCol();
+            int row = location.row();
+            int col = location.col();
             for (int roffset = -1; roffset <= 1; roffset++) {
                 int nextRow = row + roffset;
                 if (nextRow >= 0 && nextRow < depth) {
@@ -159,7 +161,7 @@ public class Field {
             List<Location> adjLocations = adjacentLocations(location);
 
             for (Location loc : adjLocations) {
-                Cell cell = field[loc.getRow()][loc.getCol()];
+                Cell cell = field[loc.row()][loc.col()];
                 if (cell.isAlive())
                     neighbours.add(cell);
             }

@@ -9,14 +9,14 @@ package src.kcl.ac.uk.ppacoursework3.lifeForms;
  */
 public enum LifeForms {
 
-    MYCOPLASMA(1), LYCOPERDON(0), DEFAULT(-1);
+    LYCOPERDON(0), MYCOPLASMA(1), CONUS(2), DEFAULT(-1);
 
-    int ID;
+    final int ID;
 
     /**
      * Associate each enum constant with an integer ID.
      *
-     * @param ID
+     * @param ID the desired integer ID for the life form.
      */
     LifeForms(int ID) {
         this.ID = ID;

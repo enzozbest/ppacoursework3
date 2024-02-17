@@ -1,10 +1,10 @@
 package src.kcl.ac.uk.ppacoursework3.simulation;
 
 import javafx.scene.paint.Color;
-import src.kcl.ac.uk.ppacoursework3.lifeForms.LifeForms;
-import src.kcl.ac.uk.ppacoursework3.lifeForms.Lycoperdon;
-import src.kcl.ac.uk.ppacoursework3.lifeForms.Mycoplasma;
+import src.kcl.ac.uk.ppacoursework3.lifeForms.*;
 import src.kcl.ac.uk.ppacoursework3.maths.AliasSampler;
+import src.kcl.ac.uk.ppacoursework3.utils.Counter;
+import src.kcl.ac.uk.ppacoursework3.utils.Randomizer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,17 +19,12 @@ import java.util.Objects;
  * @author David J. Barnes, Michael Kölling & Jeffery Raphael
  * @version 2024.02.03
  */
-
 public class Simulator {
-
-
     private final List<Cell> cells;
     private final Field field;
     private int generation;
-
     public static final int GRID_WIDTH = 100;
     public static final int GRID_HEIGHT = 80;
-
     public static final double GRID_SPAWN = 0.50;
 
     /**
@@ -107,6 +102,11 @@ public class Simulator {
                 if (spawn > GRID_SPAWN) fung.setDead();
                 return fung;
             }
+            case CONUS -> {
+                Conus conus = new Conus(field, location);
+                if (spawn > GRID_SPAWN) conus.setDead();
+                return conus;
+            }
             default -> {
                 Cell ret = createDefaultCell(location);
                 return ret;
@@ -170,7 +170,6 @@ public class Simulator {
         } catch (InterruptedException exception) {
             //wake up
         }
-
     }
 
     /**
@@ -186,49 +185,4 @@ public class Simulator {
     public int getGeneration() {
         return generation;
     }
-
-
-//    @Deprecated
-//    public LifeForms mutate(HashMap<Class<? extends Cell>, Integer> typeCount, Cell cell) {
-//        Random rand = Randomizer.getRandom();
-//        int chosen = rand.nextInt(field.adjacentLocations(cell.getLocation()).size() + 1);
-//
-//        if (typeCount.values().isEmpty()) {
-//            return LifeForms.DEFAULT;
-//        }
-//
-//        int[] cumulants = new int[typeCount.keySet().size()];
-//        for (int i = 0; i < typeCount.values().size(); i++) {
-//            for (int j = 0; j <= i; j++) {
-//                cumulants[i] += (int) typeCount.values().toArray()[j];
-//            }
-//        }
-//        switch (typeCount.values().size()) {
-//            case 1 -> {
-//                if (chosen < cumulants[0]) return LifeForms.MYCOPLASMA;
-//            }
-//            case 2 -> {
-//                if (chosen < cumulants[0]) return LifeForms.MYCOPLASMA;
-//                if (chosen < cumulants[1]) return LifeForms.FUNGUS;
-//            }
-//        }
-//        return LifeForms.DEFAULT;
-//    }
-//
-//    @Deprecated
-//    private LifeForms getType(int[] ratio) {
-//        Random rand = Randomizer.getRandom();
-//        int chosen = rand.nextInt(Arrays.stream(ratio).sum());
-//
-//        int[] cumulants = new int[ratio.length];
-//        for (int i = 0; i < ratio.length; i++) {
-//            for (int j = 0; j <= i; j++) {
-//                cumulants[i] += ratio[j];
-//            }
-//        }
-//        if (chosen < cumulants[0]) return LifeForms.FUNGUS;
-//        if (chosen < cumulants[1]) return LifeForms.MYCOPLASMA;
-//        return LifeForms.DEFAULT;
-
-//    }
 }

@@ -1,6 +1,6 @@
 package src.kcl.ac.uk.ppacoursework3.maths;
 
-import src.kcl.ac.uk.ppacoursework3.simulation.Randomizer;
+import src.kcl.ac.uk.ppacoursework3.utils.Randomizer;
 
 import java.util.Random;
 
@@ -70,7 +70,8 @@ public class AliasSampler {
      * Generates an AliasSampler object with default biases.
      */
     public AliasSampler() {
-        this(new double[]{0.3, 0.3, 0.40});
+        //this(new double[]{0.3, 0.3, 0.40});
+        this(new double[]{0.3, 0.3, 0.3, 0.1});
     }
 
     /**

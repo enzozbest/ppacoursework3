@@ -1,8 +1,8 @@
 package src.kcl.ac.uk.ppacoursework3.GUI;
 
-import src.kcl.ac.uk.ppacoursework3.simulation.Cell;
-import src.kcl.ac.uk.ppacoursework3.simulation.Counter;
+import src.kcl.ac.uk.ppacoursework3.lifeForms.Cell;
 import src.kcl.ac.uk.ppacoursework3.simulation.Field;
+import src.kcl.ac.uk.ppacoursework3.utils.Counter;
 
 import java.util.HashMap;
 
@@ -97,7 +97,6 @@ public class FieldStats {
                 nonZero++;
             }
         }
-
         return nonZero >= 1;
     }
 
