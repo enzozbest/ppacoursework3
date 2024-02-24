@@ -35,7 +35,6 @@ public class Lycoperdon extends Cell {
      * @param field the field where this cell will spawn
      * @param loc   the location in the grid where the cell will spawn
      */
-
     public Lycoperdon(Field field, Location loc) {
         this(field, loc, Color.PURPLE);
     }

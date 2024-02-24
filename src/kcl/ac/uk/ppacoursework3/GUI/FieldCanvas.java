@@ -10,7 +10,6 @@ import javafx.scene.paint.Color;
  * @author Jeffery Raphael, Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
  * @version 2024.02.12
  */
-
 public class FieldCanvas extends Canvas {
 
     private static final int GRID_VIEW_SCALING_FACTOR = 6;

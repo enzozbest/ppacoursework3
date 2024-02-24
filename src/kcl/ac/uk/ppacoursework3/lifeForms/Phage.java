@@ -4,7 +4,20 @@ import javafx.scene.paint.Color;
 import src.kcl.ac.uk.ppacoursework3.simulation.Field;
 import src.kcl.ac.uk.ppacoursework3.simulation.Location;
 
-
+/**
+ * A class representing a Phage, a type of intra-cellular obligatory parasite.
+ * In real life, phages are a highly adapted type of virus that can only infect bacterial. In our project we model this
+ * behaviour by allowing phages to only infect Mycoplasma cells, which are the only bacterial cell type in our simulation.
+ * <p></p>
+ * A Phage's ruleset is basic: it exists only to infect its neighbours, and if it has no neighbours to infect, it dies.
+ * This is because in real life viruses cannot live without a host cell.
+ * <p></p>
+ * If a Phage is alive, it will try to infect its neighbours. If it is dead, it will come alive as soon as it has
+ * neighbours to potentially infect.
+ *
+ * @author Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
+ * @version 2024.02.24
+ */
 public class Phage extends AbstractParasite {
 
     /**
@@ -26,11 +39,17 @@ public class Phage extends AbstractParasite {
      * @param location
      * @param col
      */
-    public Phage(Field field, Location location, Color col) {
+    private Phage(Field field, Location location, Color col) {
         super(field, location, col);
         isBasic = false;
     }
 
+    /**
+     * Check if the cell is alive and if it has any neighbours to infect. If so, try to infect one of them.
+     * If it has no neighbours to infect, it will die.
+     * If the cell was originally dead, check if it has any neighbours to infect. If so, come alive and try to infect them
+     * in the next generation (provided both still are alive).
+     */
     @Override
     public void act() {
         if (!isAlive()) {

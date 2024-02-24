@@ -1,15 +1,12 @@
 package src.kcl.ac.uk.ppacoursework3.simulation;
 
-import javafx.scene.paint.Color;
-import src.kcl.ac.uk.ppacoursework3.lifeForms.*;
+import src.kcl.ac.uk.ppacoursework3.lifeForms.Cell;
+import src.kcl.ac.uk.ppacoursework3.lifeForms.CellFactory;
+import src.kcl.ac.uk.ppacoursework3.lifeForms.LifeForms;
 import src.kcl.ac.uk.ppacoursework3.maths.AliasSampler;
-import src.kcl.ac.uk.ppacoursework3.utils.Counter;
-import src.kcl.ac.uk.ppacoursework3.utils.Randomizer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 
 /**
@@ -25,8 +22,7 @@ public class Simulator {
     private int generation;
     public static final int GRID_WIDTH = 100;
     public static final int GRID_HEIGHT = 80;
-    public static final double GRID_SPAWN = 0.30;
-
+    private final CellFactory factory;
     private List<Cell> toAdd;
     private List<Cell> toRemove;
 
@@ -46,6 +42,7 @@ public class Simulator {
     public Simulator(int depth, int width) {
         cells = new ArrayList<>();
         field = new Field(depth, width);
+        factory = new CellFactory();
         reset();
     }
 
@@ -87,93 +84,10 @@ public class Simulator {
             for (int col = 0; col < field.getWidth(); col++) {
                 Location location = new Location(row, col);
                 AliasSampler sampler = new AliasSampler();
-                Cell cell = generateLife((LifeForms.getByID(sampler.sample())), location);
+                Cell cell = factory.createCell(LifeForms.getByID(sampler.sample()), field, location);
                 cells.add(cell);
             }
         }
-    }
-
-    /**
-     * Create objects of the correct subtype of Cell at a giving location in the field.
-     *
-     * @param type     LifeForms constant indicating which subtype of Cell we are creating.
-     * @param location the position in the field where the new object should spawn.
-     * @return an object of a subtype of Cell
-     */
-    private Cell generateLife(LifeForms type, Location location) {
-        double spawn = Randomizer.getRandom().nextDouble();
-        switch (type) {
-            case MYCOPLASMA -> {
-                Mycoplasma myco = new Mycoplasma(field, location);
-                if (spawn > GRID_SPAWN) myco.setDead();
-                return myco;
-            }
-            case LYCOPERDON -> {
-                Lycoperdon fung = new Lycoperdon(field, location);
-                if (spawn > GRID_SPAWN) fung.setDead();
-                return fung;
-            }
-            case CONUS -> {
-                Conus conus = new Conus(field, location);
-                if (spawn > GRID_SPAWN) conus.setDead();
-                return conus;
-            }
-            case PHAGE -> {
-                return new Phage(field, location);
-            }
-            case METAMORPH -> {
-                Metamorph morph = new Metamorph(field, location);
-                if (spawn > GRID_SPAWN) morph.setDead();
-                return morph;
-            }
-            default -> {
-                return createDefaultCell(location);
-            }
-        }
-    }
-
-    /**
-     * Create an object of an anonymous class that represents a "default"/basic cell.
-     * <p></p>
-     * Objects of this class always spawn dead and do not have any rules in their rule set.
-     * These objects, however, have the ability to become any other life form implemented. At each generation,
-     * we count the number of living neighbours of the basic cell and use those as biases for the AliasSampler.
-     * From there, we choose a life form with a bias from all he implemented life forms, including the basic cell type
-     * (this would represent the cell not mutating at all, inspite of its neighbours).
-     *
-     * @param location place in the field where the Cell should spawn.
-     * @return an object of an anonymous class representing a basic cell.
-     */
-    public Cell createDefaultCell(Location location) {
-        Cell ret = new Cell(field, location, Color.GREEN) {
-            @Override
-            public void act() {
-                AliasSampler sampler = new AliasSampler(getProbabilities(Objects.requireNonNull(Counter.neighbourTypeCount(this)), this));
-                generateLife(LifeForms.getByID(sampler.sample()), getLocation());
-            }
-        };
-        ret.setDead();
-        return ret;
-    }
-
-    /**
-     * Generate an array of biases to be used with the AliasSampler.
-     * The probabilities are generated based on how many living neighbours of each type are counted and how many
-     * living neighbours a cell could have.
-     *
-     * @param neighbourCount a HashMap that uses the subtype of Cell as a key to its respective count.
-     * @param cell           the cell that is being evaluated to potentially change into a different LifeForm.
-     * @return an array of biases for the AliasSampler.
-     */
-    private double[] getProbabilities(HashMap<Class<? extends Cell>, Integer> neighbourCount, Cell cell) {
-        int totalNeighbours = cell.getField().adjacentLocations(cell.getLocation()).size();
-        double[] probs = new double[neighbourCount.values().size()];
-
-        for (int i = 0; i < neighbourCount.values().size(); i++) {
-            int temp = (int) neighbourCount.values().toArray()[i];
-            probs[i] = (double) temp / totalNeighbours;
-        }
-        return probs;
     }
 
 
@@ -204,10 +118,16 @@ public class Simulator {
         return generation;
     }
 
+    /**
+     * @return the list of new cells created to add to the list of current cells.
+     */
     public List<Cell> getToAdd() {
         return toAdd;
     }
 
+    /**
+     * @return the list of cells to remove from the list of current cells.
+     */
     public List<Cell> getToRemove() {
         return toRemove;
     }

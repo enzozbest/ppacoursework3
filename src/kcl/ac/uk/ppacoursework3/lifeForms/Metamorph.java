@@ -10,16 +10,30 @@ import java.util.List;
 import java.util.concurrent.Future;
 import java.util.function.Predicate;
 
+/**
+ * A class representing a cell that can change its behaviour based on the generation.
+ * It has two rulesets, one for the first 10 generations and another for the rest.
+ * We keep track of the generation using a GenerationTracker object. This object is created with the current generation
+ * and the number of generations to keep track of. It returns a Future object that is used to check if 10 generations
+ * have passed. If so, we switch to the second ruleset.
+ *
+ * @author Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
+ * @version 2024.02.24
+ */
 public class Metamorph extends Cell {
 
     private final List<Predicate<Cell>> rulset;
     private final GenerationTracker tracker;
     private final Future<?> future;
-    private int initialGeneration;
-
 
     /**
      * Create a new cell at location in field.
+     * <p>
+     * We initialise the ruleset with two rules, one for the first 10 generations and another for the rest.
+     * The first rule is B8/S45 and the second is B1/S1, as can be seen in the code. The rules are implemented as
+     * Predicate<Cell> objects, and we store the whole ruleset as a list. In the act() method, we check if 10 generations
+     * have passed and choose the correct rules to apply. The act() method only tests the Predicates for the current
+     * cell.
      *
      * @param field    The field currently occupied.
      * @param location The location within the field.
@@ -60,10 +74,19 @@ public class Metamorph extends Cell {
         future = tracker.run();
     }
 
+    /**
+     * Create a new cell at location in field with a default colour (Color.AQUA).
+     *
+     * @param field    The field currently occupied.
+     * @param location The location within the field.
+     */
     public Metamorph(Field field, Location location) {
         this(field, location, Color.AQUA);
     }
 
+    /**
+     * Check if 10 generations have passed. If so, use the second ruleset, if not use the first.
+     */
     @Override
     public void act() {
         if (future.isDone()) {
