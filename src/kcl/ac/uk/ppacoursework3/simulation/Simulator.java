@@ -25,7 +25,10 @@ public class Simulator {
     private int generation;
     public static final int GRID_WIDTH = 100;
     public static final int GRID_HEIGHT = 80;
-    public static final double GRID_SPAWN = 0.50;
+    public static final double GRID_SPAWN = 0.30;
+
+    private List<Cell> toAdd;
+    private List<Cell> toRemove;
 
     /**
      * Construct a simulation field with default size.
@@ -51,11 +54,19 @@ public class Simulator {
      * Iterate over the whole field updating the state of each life form.
      */
     public void simOneGeneration() {
+        toAdd = new ArrayList<>();
+        toRemove = new ArrayList<>();
         generation++;
+
         for (Cell cell : cells) {
             cell.act();
             cell.updateState();
         }
+        cells.addAll(toAdd);
+        cells.removeAll(toRemove);
+
+        toAdd.clear();
+        toRemove.clear();
     }
 
     /**
@@ -107,9 +118,16 @@ public class Simulator {
                 if (spawn > GRID_SPAWN) conus.setDead();
                 return conus;
             }
+            case PHAGE -> {
+                return new Phage(field, location);
+            }
+            case METAMORPH -> {
+                Metamorph morph = new Metamorph(field, location);
+                if (spawn > GRID_SPAWN) morph.setDead();
+                return morph;
+            }
             default -> {
-                Cell ret = createDefaultCell(location);
-                return ret;
+                return createDefaultCell(location);
             }
         }
     }
@@ -126,7 +144,7 @@ public class Simulator {
      * @param location place in the field where the Cell should spawn.
      * @return an object of an anonymous class representing a basic cell.
      */
-    private Cell createDefaultCell(Location location) {
+    public Cell createDefaultCell(Location location) {
         Cell ret = new Cell(field, location, Color.GREEN) {
             @Override
             public void act() {
@@ -184,5 +202,13 @@ public class Simulator {
      */
     public int getGeneration() {
         return generation;
+    }
+
+    public List<Cell> getToAdd() {
+        return toAdd;
+    }
+
+    public List<Cell> getToRemove() {
+        return toRemove;
     }
 }

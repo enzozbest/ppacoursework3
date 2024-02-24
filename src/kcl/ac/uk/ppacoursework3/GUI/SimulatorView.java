@@ -93,7 +93,6 @@ public class SimulatorView extends Application {
     public void updateCanvas(int generation, Field field) {
         genLabel.setText(GENERATION_PREFIX + generation);
         stats.reset();
-        //System.out.println(generation);
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
                 Cell cell = field.getObjectAt(row, col);
@@ -131,9 +130,9 @@ public class SimulatorView extends Application {
             protected Void call() {
                 for (int g = 1; g <= numGenerations; g++) {
                     simulator.simOneGeneration();
-                    simulator.delay(500);
+                    simulator.delay(1000);
                     Platform.runLater(() -> updateCanvas(simulator.getGeneration(), simulator.getField())); //Updates the GUI
-                    simulator.delay(1); //ensures the GUI has time to update before simulating the next generation.
+                    simulator.delay(10); //ensures the GUI has time to update before simulating the next generation.
                 }
                 return null;
             }

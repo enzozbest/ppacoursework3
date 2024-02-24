@@ -123,6 +123,7 @@ public abstract class Cell {
         return field;
     }
 
+
     /**
      * Filter out cells of the same subtype from the list of living neighbours
      *
@@ -130,7 +131,6 @@ public abstract class Cell {
      */
     protected List<Cell> getSameType() {
         Class<? extends Cell> type = this.getClass();
-        List<Cell> list = field.getLivingNeighbours(location).stream().filter(c -> type.isAssignableFrom(c.getClass())).map(type::cast).distinct().collect(Collectors.toList());
-        return list;
+        return field.getLivingNeighbours(location).stream().filter(c -> type.isAssignableFrom(c.getClass())).map(type::cast).distinct().collect(Collectors.toList());
     }
 }

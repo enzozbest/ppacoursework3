@@ -1,12 +1,12 @@
 package src.kcl.ac.uk.ppacoursework3.lifeForms;
 
-
 import javafx.scene.paint.Color;
 import src.kcl.ac.uk.ppacoursework3.maths.AliasSampler;
 import src.kcl.ac.uk.ppacoursework3.simulation.Field;
 import src.kcl.ac.uk.ppacoursework3.simulation.Location;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * This class represents a non-deterministic cell in the simulation, a life form inspired by the
@@ -46,31 +46,42 @@ public class Conus extends NonDeterministicCell {
      */
     private Conus(Field field, Location loc, Color col) {
         super(field, loc, col);
-        sampler = new AliasSampler(new double[]{0.5, 0.5});
-        rules = List.of(
+        sampler = new AliasSampler(new double[]{0.5, 0.5}); //Set probabilities for each rule in the set, in order.
+        rules = createRuleSet();
+        currentRule = rules.get(sampler.sample());
+    }
+
+    /**
+     * Create the rule set for this life form.
+     *
+     * @return The rule set as list of Predicate objects that are used to determine whether this cell is alive or dead
+     * in the next generation.
+     */
+    private List<Predicate<Cell>> createRuleSet() {
+        return List.of(
                 cell -> {
                     boolean nextAlive = false;
                     List<Cell> neighbours = cell.getSameType();
-                    if (isAlive() && neighbours.size() == 4) {
+                    if (isAlive() && (neighbours.size() == 2) || neighbours.size() == 3) {
                         nextAlive = true;
                     }
-                    if (!isAlive() && neighbours.size() >= 2) {
+                    if (!isAlive() && neighbours.size() == 0) {
                         nextAlive = true;
                     }
 
                     return nextAlive;
-                }, // Rule 1 B2/S4
+                }, // Rule 1 B0/S23
                 cell -> {
                     boolean nextAlive = false;
                     List<Cell> neighbours = cell.getSameType();
-                    if (isAlive() && neighbours.size() == 3) {
+                    if (isAlive() && neighbours.size() == 7) {
                         nextAlive = true;
                     }
-                    if (!isAlive() && neighbours.size() <= 3) {
+                    if (!isAlive() && neighbours.size() == 1) {
                         nextAlive = true;
                     }
                     return nextAlive;
-                } // Rule 2 B3/S3
+                } // Rule 2 B1/S7
         );
     }
 }

@@ -28,6 +28,8 @@ public abstract class NonDeterministicCell extends Cell {
     protected static List<Predicate<Cell>> rules;
     protected AliasSampler sampler;
 
+    protected Predicate<Cell> currentRule;
+
     /**
      * Create a new non-deterministic cell at location in field.
      *
@@ -45,6 +47,6 @@ public abstract class NonDeterministicCell extends Cell {
      */
     @Override
     public void act() {
-        setNextState(rules.get(sampler.sample()).test(this));
+        setNextState(currentRule.test(this));
     }
 }

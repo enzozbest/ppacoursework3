@@ -72,15 +72,16 @@ public class Lycoperdon extends Cell {
         } else {
             if (future != null && future.isDone()) {
                 setColor(Color.PURPLE); //3 generations have passed, the Lycoperdon is refilled.
+                future = null;
             }
         }
 
         if (isAlive()) {
-            if (neighbours.size() > 1 && neighbours.size() <= 3) {
+            if (neighbours.size() == 2 || neighbours.size() == 3) {
                 setNextState(true);
             }
-        } else if (neighbours.size() == 3) {
+        } else if (neighbours.size() == 3 || neighbours.size() == 6) {
             setNextState(true);
-        }
+        } //B36/S23
     }
 }

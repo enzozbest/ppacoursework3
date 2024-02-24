@@ -70,8 +70,7 @@ public class AliasSampler {
      * Generates an AliasSampler object with default biases.
      */
     public AliasSampler() {
-        //this(new double[]{0.3, 0.3, 0.40});
-        this(new double[]{0.3, 0.3, 0.3, 0.1});
+        this(new double[]{0.4, 0.2, 0.3, 0.005, 0.1, 0.895});
     }
 
     /**

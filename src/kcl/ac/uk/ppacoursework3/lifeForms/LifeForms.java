@@ -9,7 +9,7 @@ package src.kcl.ac.uk.ppacoursework3.lifeForms;
  */
 public enum LifeForms {
 
-    LYCOPERDON(0), MYCOPLASMA(1), CONUS(2), DEFAULT(-1);
+    LYCOPERDON(0), MYCOPLASMA(1), CONUS(2), PHAGE(3), METAMORPH(4), DISEASED(-2), DEFAULT(-1);
 
     final int ID;
 

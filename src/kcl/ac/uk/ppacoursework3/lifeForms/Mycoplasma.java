@@ -43,13 +43,27 @@ public class Mycoplasma extends Cell {
         isBasic = false;
     }
 
+    private boolean spreadDisease() {
+        int count = 0;
+        for (Cell cell : getField().getLivingNeighbours(getLocation())) {
+            if (cell instanceof DiseasedCell) {
+                count++;
+            }
+        }
+        return count >= 3;
+    }
+
     /**
      * Rule set for this Life form:
-     * 1. If Mycoplasma is alive and it has both more than 1 and fewer than 3 neighbours,
+     * 1. If Mycoplasma is alive, and it has both more than 1 and fewer than 3 neighbours,
      * it remains alive in the next generation.
-     * 2. If Mycoplasma is dead and it has exactly 3 neighbours, it comes alive in the next generation.
+     * 2. If Mycoplasma is dead, and it has exactly 3 neighbours, it comes alive in the next generation.
      */
     public void act() {
+        if (spreadDisease()) {
+            getField().place(new DiseasedCell(getField(), getLocation()), getLocation());
+            return;
+        }
         List<Cell> neighbours = getSameType();
         setNextState(false);
 
