@@ -1,7 +1,6 @@
 package src.kcl.ac.uk.ppacoursework3.lifeForms;
 
 import javafx.scene.paint.Color;
-import src.kcl.ac.uk.ppacoursework3.maths.AliasSampler;
 import src.kcl.ac.uk.ppacoursework3.simulation.Field;
 import src.kcl.ac.uk.ppacoursework3.simulation.Location;
 
@@ -26,7 +25,6 @@ import java.util.function.Predicate;
 public abstract class NonDeterministicCell extends Cell {
 
     protected static List<Predicate<Cell>> rules;
-    protected AliasSampler sampler;
 
     protected Predicate<Cell> currentRule;
 

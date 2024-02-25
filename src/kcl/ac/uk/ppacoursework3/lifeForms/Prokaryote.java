@@ -7,6 +7,7 @@ import src.kcl.ac.uk.ppacoursework3.simulation.Field;
 import src.kcl.ac.uk.ppacoursework3.simulation.Location;
 import src.kcl.ac.uk.ppacoursework3.utils.Counter;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -60,11 +61,32 @@ public class Prokaryote extends Cell {
      */
     @Override
     public void act() {
-        AliasSampler sampler = new AliasSampler(factory.getProbabilities(Objects.requireNonNull(Counter.neighbourTypeCount(this)), this));
+        sampler = new AliasSampler(getProbabilities(Objects.requireNonNull(Counter.neighbourTypeCount(this)), this));
 
         Cell cell = factory.createCell(LifeForms.getByID(sampler.sample()), getField(), getLocation());
         SimulatorView.simulator.getToAdd().add(cell);
         SimulatorView.simulator.getToRemove().add(this);
         getField().place(cell, getLocation());
+    }
+
+
+    /**
+     * Generate an array of biases to be used with the AliasSampler.
+     * The probabilities are generated based on how many living neighbours of each type are counted and how many
+     * living neighbours a cell could have.
+     *
+     * @param neighbourCount a HashMap that uses the subtype of Cell as a key to its respective count.
+     * @param cell           the cell that is being evaluated to potentially change into a different LifeForm.
+     * @return an array of biases for the AliasSampler.
+     */
+    private double[] getProbabilities(HashMap<Class<? extends Cell>, Integer> neighbourCount, Cell cell) {
+        int totalNeighbours = cell.getField().adjacentLocations(cell.getLocation()).size();
+        double[] probs = new double[neighbourCount.values().size()];
+
+        for (int i = 0; i < neighbourCount.values().size(); i++) {
+            int temp = (int) neighbourCount.values().toArray()[i];
+            probs[i] = (double) temp / totalNeighbours;
+        }
+        return probs;
     }
 }

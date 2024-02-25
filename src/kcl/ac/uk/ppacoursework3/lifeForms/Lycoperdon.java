@@ -21,11 +21,7 @@ import java.util.concurrent.Future;
  * @version 2024.02.13
  */
 public class Lycoperdon extends Cell {
-
     private int colisionCount;
-
-    private GenerationTracker genTracker;
-
     private Future future;
 
     /**
@@ -65,8 +61,8 @@ public class Lycoperdon extends Cell {
         if (!getColor().equals(Color.GREEN)) {
             if (colisionCount >= 3) {
                 setColor(Color.GREEN);
-                genTracker = new GenerationTracker(SimulatorView.simulator.getGeneration(), 3);
-                future = genTracker.run(); //Start the tracking of 3 generations to "refill" the Lycoperdon.
+                tracker = new GenerationTracker(SimulatorView.simulator.getGeneration(), 3);
+                future = tracker.run(); //Start the tracking of 3 generations to "refill" the Lycoperdon.
             }
         } else {
             if (future != null && future.isDone()) {

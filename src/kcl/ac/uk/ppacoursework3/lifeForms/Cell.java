@@ -1,6 +1,8 @@
 package src.kcl.ac.uk.ppacoursework3.lifeForms;
 
 import javafx.scene.paint.Color;
+import src.kcl.ac.uk.ppacoursework3.concurrent.GenerationTracker;
+import src.kcl.ac.uk.ppacoursework3.maths.AliasSampler;
 import src.kcl.ac.uk.ppacoursework3.simulation.Field;
 import src.kcl.ac.uk.ppacoursework3.simulation.Location;
 
@@ -22,6 +24,8 @@ public abstract class Cell {
     protected boolean isBasic;
     private Location location;
     private Color color = Color.WHITE;
+    protected AliasSampler sampler;
+    protected GenerationTracker tracker;
 
     /**
      * Create a new cell at location in field.

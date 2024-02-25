@@ -1,0 +1,114 @@
+@startuml
+class Conus {
+}
+
+abstract class NonDeterministicCell {
+}
+
+
+class Field {
+}
+
+
+class FieldStats {
+}
+
+
+class Metamorph {
+}
+
+
+class Prokaryote {
+}
+
+
+class Phage {
+}
+
+abstract class AbstractParasite {
+}
+
+
+class Randomizer {
+}
+
+
+class Lycoperdon {
+}
+
+
+abstract class Cell {
+
+}
+
+
+class Simulator {
+}
+
+
+class Location {
+}
+
+
+class CellFactory {
+}
+
+
+class DiseasedCell {
+
+}
+
+
+enum LifeForms {
+}
+
+
+class FieldCanvas {
+}
+
+
+class AliasSampler {
+
+}
+
+
+class GenerationTracker {
+}
+
+
+class Counter {
+}
+
+
+class Mycoplasma {
+}
+class SimulatorView {
+}
+
+
+Cell ..> Field
+NonDeterministicCell ..> AliasSampler
+Cell ..> GenerationTracker
+Cell ..> Location
+AbstractParasite ..> CellFactory
+Prokaryote ..> CellFactory
+Field ..> Cell
+Field ..> Randomizer
+AliasSampler ..> Randomizer
+Simulator ..> Cell
+Simulator ..> Field
+Simulator ..> CellFactory
+SimulatorView ..> FieldCanvas
+SimulatorView ..> FieldStats
+SimulatorView ..> Simulator
+FieldStats ..> Counter
+NonDeterministicCell <|-- Conus
+Cell <|-- NonDeterministicCell
+Cell <|-- Metamorph
+Cell <|-- Prokaryote
+AbstractParasite <|-- Phage
+Cell <|-- AbstractParasite
+Cell <|-- Lycoperdon
+AbstractParasite <|-- DiseasedCell
+Cell <|-- Mycoplasma
+@enduml

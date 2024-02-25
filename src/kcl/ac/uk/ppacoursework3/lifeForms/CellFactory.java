@@ -5,7 +5,6 @@ import src.kcl.ac.uk.ppacoursework3.simulation.Location;
 import src.kcl.ac.uk.ppacoursework3.utils.Randomizer;
 
 import java.lang.reflect.Constructor;
-import java.util.HashMap;
 
 /**
  * This class is responsible for creating new cells. It uses reflection to create new cells based on the LifeForms enum.
@@ -17,7 +16,7 @@ import java.util.HashMap;
  */
 @SuppressWarnings("unchecked")
 public class CellFactory {
-    private static final double GRID_SPAWN = 0.30;
+    private static final double GRID_SPAWN = 0.70;
 
     /**
      * Create a new cell at location in field.
@@ -39,30 +38,15 @@ public class CellFactory {
             Constructor<? extends Cell> clazz = (Constructor<? extends Cell>)
                     Class.forName("src.kcl.ac.uk.ppacoursework3.lifeForms." + typeName)
                             .getConstructor(Field.class, Location.class);
+
             cell = clazz.newInstance(field, loc);
+            
+            if (Randomizer.getRandom().nextDouble() > GRID_SPAWN) cell.setDead();
+
         } catch (Exception e) {
             System.out.println("Error creating cell: " + e.getMessage());
         }
         return cell;
     }
 
-    /**
-     * Generate an array of biases to be used with the AliasSampler.
-     * The probabilities are generated based on how many living neighbours of each type are counted and how many
-     * living neighbours a cell could have.
-     *
-     * @param neighbourCount a HashMap that uses the subtype of Cell as a key to its respective count.
-     * @param cell           the cell that is being evaluated to potentially change into a different LifeForm.
-     * @return an array of biases for the AliasSampler.
-     */
-    public double[] getProbabilities(HashMap<Class<? extends Cell>, Integer> neighbourCount, Cell cell) {
-        int totalNeighbours = cell.getField().adjacentLocations(cell.getLocation()).size();
-        double[] probs = new double[neighbourCount.values().size()];
-
-        for (int i = 0; i < neighbourCount.values().size(); i++) {
-            int temp = (int) neighbourCount.values().toArray()[i];
-            probs[i] = (double) temp / totalNeighbours;
-        }
-        return probs;
-    }
 }

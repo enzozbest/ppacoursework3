@@ -23,7 +23,6 @@ import java.util.function.Predicate;
 public class Metamorph extends Cell {
 
     private final List<Predicate<Cell>> rulset;
-    private final GenerationTracker tracker;
     private final Future<?> future;
 
     /**

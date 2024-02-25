@@ -22,7 +22,6 @@ import java.util.concurrent.Future;
  */
 public class DiseasedCell extends AbstractParasite {
 
-    private final GenerationTracker tracker;
     private Future<?> future;
 
     /**

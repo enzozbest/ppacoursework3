@@ -2,6 +2,7 @@ package src.kcl.ac.uk.ppacoursework3.lifeForms;
 
 import javafx.scene.paint.Color;
 import src.kcl.ac.uk.ppacoursework3.GUI.SimulatorView;
+import src.kcl.ac.uk.ppacoursework3.concurrent.GenerationTracker;
 import src.kcl.ac.uk.ppacoursework3.simulation.Field;
 import src.kcl.ac.uk.ppacoursework3.simulation.Location;
 
@@ -24,6 +25,8 @@ import java.util.List;
 public abstract class AbstractParasite extends Cell {
 
     protected CellFactory factory;
+
+    protected GenerationTracker tracker;
 
     /**
      * Create a parasitic cell at a location in field.

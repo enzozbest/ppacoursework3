@@ -43,7 +43,12 @@ public class Mycoplasma extends Cell {
         isBasic = false;
     }
 
-    private boolean spreadDisease() {
+    /**
+     * Check if the Mycoplasma has enough diseased neighbours to become ill.
+     *
+     * @return true if more than 3 of its neighbours are diseased, false otherwise.
+     */
+    private boolean fallIll() {
         int count = 0;
         for (Cell cell : getField().getLivingNeighbours(getLocation())) {
             if (cell instanceof DiseasedCell) {
@@ -60,7 +65,7 @@ public class Mycoplasma extends Cell {
      * 2. If Mycoplasma is dead, and it has exactly 3 neighbours, it comes alive in the next generation.
      */
     public void act() {
-        if (spreadDisease()) {
+        if (fallIll()) {
             getField().place(new DiseasedCell(getField(), getLocation()), getLocation());
             return;
         }
