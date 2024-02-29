@@ -92,17 +92,15 @@ Cell ..> GenerationTracker
 Cell ..> Location
 AbstractParasite ..> CellFactory
 Prokaryote ..> CellFactory
-SimulatorView ..> Field
+Field ..> Cell
+Field ..> Randomizer
+AliasSampler ..> Randomizer
+Simulator ..> Cell
+Simulator ..> Field
+Simulator ..> CellFactory
 SimulatorView ..> FieldCanvas
 SimulatorView ..> FieldStats
 SimulatorView ..> Simulator
-Simulator ..> Cell
-Simulator ..> Randomizer
-Simulator ..> GenerationTracker
-Lycoperdon ..> GenerationTracker
-Metamorph ..> GenerationTracker
-CellFactory ..> LifeForms
-Simulator ..>LifeForms
 FieldStats ..> Counter
 NonDeterministicCell <|-- Conus
 Cell <|-- NonDeterministicCell

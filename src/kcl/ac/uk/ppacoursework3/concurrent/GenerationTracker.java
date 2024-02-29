@@ -56,7 +56,7 @@ public class GenerationTracker {
                     currentGen = simulator.getGeneration();
                 }
             } catch (InterruptedException e) {
-                System.out.println("Thread has ended unexpectedly");
+
             }
         });
     }

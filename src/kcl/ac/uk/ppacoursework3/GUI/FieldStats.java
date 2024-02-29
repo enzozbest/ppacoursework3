@@ -34,19 +34,15 @@ public class FieldStats {
      *
      * @return A string describing what is in the field.
      */
-    public String getPopulationDetails(Field field) {
-        StringBuffer buffer = new StringBuffer();
+    public HashMap<Class<? extends Cell>, Integer> getPopulationDetails(Field field) {
+        HashMap<Class<? extends Cell>, Integer> population = new HashMap<>();
         if (!countsValid) {
             generateCounts(field);
         }
         for (Class key : counters.keySet()) {
-            Counter info = counters.get(key);
-            buffer.append(info.getName());
-            buffer.append(": ");
-            buffer.append(info.getCount());
-            buffer.append(' ');
+            population.put(key, counters.get(key).getCount());
         }
-        return buffer.toString();
+        return population;
     }
 
     /**

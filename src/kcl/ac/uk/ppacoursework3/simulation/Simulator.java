@@ -57,8 +57,12 @@ public class Simulator {
 
         for (Cell cell : cells) {
             cell.act();
+        }
+
+        for (Cell cell : cells) {
             cell.updateState();
         }
+
         cells.addAll(toAdd);
         cells.removeAll(toRemove);
 

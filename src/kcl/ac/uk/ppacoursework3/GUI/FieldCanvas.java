@@ -1,8 +1,11 @@
 package src.kcl.ac.uk.ppacoursework3.GUI;
 
+import javafx.fxml.FXMLLoader;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+
+import java.io.IOException;
 
 /**
  * Provide a graphical view of the field. This is a custom node for the user interface.
@@ -26,7 +29,17 @@ public class FieldCanvas extends Canvas {
         gc = getGraphicsContext2D();
         this.height = height;
         this.width = width;
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("canvas-controller.fxml"));
+        loader.setRoot(this);
+        loader.setController(this);
+        try {
+            loader.load();
+        } catch (IOException e) {
+            System.out.println("Error loading canvas-controller.fxml" + e.getMessage());
+        }
     }
+
 
     /**
      * Sets the scale of the grid.
@@ -52,4 +65,5 @@ public class FieldCanvas extends Canvas {
         gc.setFill(color);
         gc.fillRect(x * xScale, y * yScale, xScale - 1, yScale - 1);
     }
+
 }

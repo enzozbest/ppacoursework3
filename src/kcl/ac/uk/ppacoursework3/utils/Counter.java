@@ -51,14 +51,7 @@ public class Counter {
         }
         return typeCount;
     }
-
-    /**
-     * @return The short description of this type.
-     */
-    public String getName() {
-        return name;
-    }
-
+    
     /**
      * @return The current count for this type.
      */

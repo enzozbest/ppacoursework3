@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.*?>
+<Group xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1">
+    <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
+                prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.14-internal">
+        <top>
+            <VBox BorderPane.alignment="CENTER">
+                <Label fx:id="genLabel" style="-fx-font-weight: bold;" text="Generation: 0"/>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <padding>
+                        <Insets left="10.0" top="20.0" right="10"/>
+                    </padding>
+                    <Button fx:id="startButton" mnemonicParsing="false"
+                            onAction="#clickStart" text="Start"/>
+                    <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="stepButton" mnemonicParsing="false"
+                            onAction="#clickStep" text="Step"/>
+                    <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="resetButton" mnemonicParsing="false"
+                            onAction="#clickReset" text="Reset"/>
+                </HBox>
+            </VBox>
+        </top>
+        <bottom>
+            <VBox BorderPane.alignment="CENTER">
+                <HBox prefHeight="20" prefWidth="300" spacing="10">
+                    <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"/>
+                    <Label VBox.vgrow="ALWAYS" style="-fx-font-weight: bold;" text="Population Statistics"/>
+                    <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"/>
+                </HBox>
+
+                <HBox prefHeight="100.0" prefWidth="250.0" spacing="100">
+                    <children>
+                        <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"/>
+                        <VBox prefHeight="200.0" prefWidth="200.0" spacing="30.0">
+                            <children>
+                                <Label fx:id="mycoLabel" text="Mycoplasma: "/>
+                                <Label fx:id="lycoLabel" text="Lycoperdon:"/>
+                            </children>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="200.0" spacing="30.0">
+                            <children>
+                                <Label fx:id="conLabel" text="Conus: "/>
+                                <Label fx:id="phaLabel" text="Phage: "/>
+                            </children>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="200.0" spacing="30.0">
+                            <children>
+                                <Label fx:id="metaLabel" text="Metamoprh: "/>
+                                <Label fx:id="disLabel" text="DiseadCell: "/>
+                            </children>
+                        </VBox>
+                        <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"/>
+                    </children>
+                </HBox>
+            </VBox>
+        </bottom>
+        <center>
+        </center>
+    </BorderPane>
+</Group>

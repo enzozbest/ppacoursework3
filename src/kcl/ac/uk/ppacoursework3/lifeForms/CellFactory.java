@@ -40,7 +40,7 @@ public class CellFactory {
                             .getConstructor(Field.class, Location.class);
 
             cell = clazz.newInstance(field, loc);
-            
+
             if (Randomizer.getRandom().nextDouble() > GRID_SPAWN) cell.setDead();
 
         } catch (Exception e) {
@@ -48,5 +48,4 @@ public class CellFactory {
         }
         return cell;
     }
-
 }

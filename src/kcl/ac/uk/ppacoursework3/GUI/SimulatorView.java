@@ -3,17 +3,20 @@ package src.kcl.ac.uk.ppacoursework3.GUI;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import src.kcl.ac.uk.ppacoursework3.concurrent.GenerationTracker;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.Cell;
 import src.kcl.ac.uk.ppacoursework3.simulation.Field;
 import src.kcl.ac.uk.ppacoursework3.simulation.Simulator;
+
+import java.io.IOException;
+import java.util.concurrent.Future;
 
 /**
  * A graphical view of the simulation grid. The view displays a rectangle for
@@ -27,71 +30,56 @@ import src.kcl.ac.uk.ppacoursework3.simulation.Simulator;
 public class SimulatorView extends Application {
 
 
-    public static final int WIN_WIDTH = 650;
-    public static final int WIN_HEIGHT = 650;
-    private static final Color EMPTY_COLOR = Color.WHITE;
-    private final String GENERATION_PREFIX = "Generation: ";
-    private final String POPULATION_PREFIX = "Population: ";
-    private Label genLabel, population, infoLabel;
     private FieldCanvas fieldCanvas;
     private FieldStats stats;
     public static Simulator simulator;
+    private static final Color EMPTY_COLOR = Color.WHITE;
+    private Future<?> simulationComplete;
+    private GUIController controller;
 
     /**
      * Create a view of the given width and height.
      */
+
     @Override
     public void start(Stage stage) {
-        stats = new FieldStats();
-        fieldCanvas = new FieldCanvas(WIN_WIDTH - 50, WIN_HEIGHT - 50);
         simulator = new Simulator();
-        Group root = new Group();
+        stats = new FieldStats();
+        controller = new GUIController(this);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("simulator-view.fxml"));
+        loader.setController(controller);
 
-        fieldCanvas.setScale(Simulator.GRID_HEIGHT, Simulator.GRID_WIDTH);
+        try {
+            Group root = loader.load();
 
-        genLabel = new Label(GENERATION_PREFIX);
-        infoLabel = new Label("  ");
-        population = new Label(POPULATION_PREFIX);
+            BorderPane pane = (BorderPane) root.getChildren().get(0);
 
-        BorderPane bPane = new BorderPane();
-        HBox infoPane = new HBox();
-        HBox popPane = new HBox();
+            fieldCanvas = new FieldCanvas(600, 600);
+            fieldCanvas.setScale(Simulator.GRID_HEIGHT, Simulator.GRID_WIDTH);
+            updateCanvas(simulator.getField());
 
-        infoPane.setSpacing(10);
-        infoPane.getChildren().addAll(genLabel, infoLabel);
-        popPane.getChildren().addAll(population);
+            pane.setCenter(fieldCanvas);
+            pane.autosize();
 
-        bPane.setTop(infoPane);
-        bPane.setCenter(fieldCanvas);
-        bPane.setBottom(population);
 
-        root.getChildren().add(bPane);
-        Scene scene = new Scene(root, WIN_WIDTH, WIN_HEIGHT);
+            Scene scene = new Scene(root, GUIController.WIN_WIDTH, GUIController.WIN_HEIGHT);
+            stage.setScene(scene);
+            stage.setTitle("Game of Life Simulation");
 
-        stage.setScene(scene);
-        stage.setTitle("Life Simulation");
-        updateCanvas(simulator.getGeneration(), simulator.getField());
+            stage.show();
 
-        stage.show();
-
-        simulate(1000);
-    }
-
-    /**
-     * Display a short information label at the top of the window.
-     */
-    public void setInfoText(String text) {
-        infoLabel.setText(text);
+            //simulate(1000);
+        } catch (IOException e) {
+            System.out.println("Error loading FXML file" + e.getMessage() + e.getCause() + e.getStackTrace());
+        }
     }
 
     /**
      * Show the current status of the field.
      *
-     * @param generation The current generation.
-     * @param field      The field whose status is to be displayed.
+     * @param field The field whose status is to be displayed.
      */
-    public void updateCanvas(int generation, Field field) {
-        genLabel.setText(GENERATION_PREFIX + generation);
+    public void updateCanvas(Field field) {
         stats.reset();
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
@@ -105,16 +93,15 @@ public class SimulatorView extends Application {
             }
         }
         stats.countFinished();
-        population.setText(POPULATION_PREFIX + stats.getPopulationDetails(field));
+        controller.updateGenerationLabel();
     }
 
+
     /**
-     * Determine whether the simulation should continue to run.
-     *
-     * @return true If there is more than one species alive.
+     * Reset the simulation to a starting position.
      */
-    public boolean isViable(Field field) {
-        return stats.isViable(field);
+    public void reset() {
+        simulator.reset();
     }
 
     /**
@@ -124,6 +111,7 @@ public class SimulatorView extends Application {
      *
      * @param numGenerations The number of generations to run for.
      */
+    @FXML
     public void simulate(int numGenerations) {
         Task<Void> simulation = new Task<>() {
             @Override
@@ -131,21 +119,17 @@ public class SimulatorView extends Application {
                 for (int g = 1; g <= numGenerations; g++) {
                     simulator.simOneGeneration();
                     simulator.delay(1000);
-                    Platform.runLater(() -> updateCanvas(simulator.getGeneration(), simulator.getField())); //Updates the GUI
+                    Platform.runLater(() -> updateCanvas(simulator.getField())); //Updates the GUI
                     simulator.delay(10); //ensures the GUI has time to update before simulating the next generation.
                 }
                 return null;
             }
         };
-        GenerationTracker.executor.submit(simulation);
+        simulationComplete = GenerationTracker.executor.submit(simulation);
     }
 
-    /**
-     * Reset the simulation to a starting position.
-     */
-    public void reset() {
-        simulator.reset();
-        updateCanvas(simulator.getGeneration(), simulator.getField());
+    public Future<?> getSimulationComplete() {
+        return simulationComplete;
     }
 
     /**
@@ -156,5 +140,6 @@ public class SimulatorView extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
 
 }

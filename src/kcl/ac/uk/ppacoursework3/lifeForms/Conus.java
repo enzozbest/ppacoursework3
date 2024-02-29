@@ -62,7 +62,7 @@ public class Conus extends NonDeterministicCell {
                 cell -> {
                     boolean nextAlive = false;
                     List<Cell> neighbours = cell.getSameType();
-                    if (isAlive() && (neighbours.size() == 2) || neighbours.size() == 3) {
+                    if (isAlive() && (neighbours.size() == 2 || neighbours.size() == 3)) {
                         nextAlive = true;
                     }
                     if (!isAlive() && neighbours.size() == 0) {
