@@ -33,6 +33,7 @@ public class FieldCanvas extends Canvas {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("canvas-controller.fxml"));
         loader.setRoot(this);
         loader.setController(this);
+
         try {
             loader.load();
         } catch (IOException e) {
@@ -51,11 +52,9 @@ public class FieldCanvas extends Canvas {
         xScale = width / gridWidth;
         yScale = height / gridHeight;
 
-        if (xScale < 1)
-            xScale = GRID_VIEW_SCALING_FACTOR;
+        if (xScale < 1) xScale = GRID_VIEW_SCALING_FACTOR;
 
-        if (yScale < 1)
-            yScale = GRID_VIEW_SCALING_FACTOR;
+        if (yScale < 1) yScale = GRID_VIEW_SCALING_FACTOR;
     }
 
     /**
@@ -65,5 +64,4 @@ public class FieldCanvas extends Canvas {
         gc.setFill(color);
         gc.fillRect(x * xScale, y * yScale, xScale - 1, yScale - 1);
     }
-
 }

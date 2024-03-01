@@ -15,10 +15,9 @@ import java.util.stream.Collectors;
  * @author David J. Barnes, Michael Kölling & Jeffery Raphael, Enzo Bestetti(K23011872), Krystian Augustynowicz(K23000902)
  * @version 2024.02.12
  */
-
 public abstract class Cell {
-
     private boolean alive;
+
     private boolean nextAlive; // The state of the cell in the next iteration
     private final Field field;
     protected boolean isBasic;
@@ -46,7 +45,49 @@ public abstract class Cell {
      * Make this cell act - that is: the cell decides it's status in the
      * next generation.
      */
-    abstract public void act();
+    public abstract void act();
+
+    /**
+     * Returns the cell's color
+     */
+    public Color getColor() {
+        return color;
+    }
+
+    /**
+     * Return the cell's location.
+     *
+     * @return The cell's location.
+     */
+    public Location getLocation() {
+        return location;
+    }
+
+    /**
+     * Filter out cells of the same subtype from the list of living neighbours
+     *
+     * @return a list of cells of the same subtype.
+     */
+    protected List<Cell> getSameType() {
+        Class<? extends Cell> type = this.getClass();
+        return field.getLivingNeighbours(location).stream().filter(c -> type.isAssignableFrom(c.getClass())).map(type::cast).distinct().collect(Collectors.toList());
+    }
+
+    /**
+     * Return the cell's field.
+     *
+     * @return The cell's field.
+     */
+    public Field getField() {
+        return field;
+    }
+
+    /**
+     * @return true if the cell is a basic cell, false otherwise.
+     */
+    public boolean isBasic() {
+        return isBasic;
+    }
 
     /**
      * Check whether the cell is alive or not.
@@ -72,40 +113,10 @@ public abstract class Cell {
     }
 
     /**
-     * Changes the state of the cell
-     */
-    public void updateState() {
-        alive = nextAlive;
-    }
-
-    /**
      * Changes the color of the cell
      */
     protected void setColor(Color col) {
         color = col;
-    }
-
-    /**
-     * Returns the cell's color
-     */
-    public Color getColor() {
-        return color;
-    }
-
-    /**
-     * Return the cell's location.
-     *
-     * @return The cell's location.
-     */
-    public Location getLocation() {
-        return location;
-    }
-
-    /**
-     * @return true if the cell is a basic cell, false otherwise.
-     */
-    public boolean isBasic() {
-        return isBasic;
     }
 
     /**
@@ -119,22 +130,9 @@ public abstract class Cell {
     }
 
     /**
-     * Return the cell's field.
-     *
-     * @return The cell's field.
+     * Changes the state of the cell
      */
-    public Field getField() {
-        return field;
-    }
-
-
-    /**
-     * Filter out cells of the same subtype from the list of living neighbours
-     *
-     * @return a list of cells of the same subtype.
-     */
-    protected List<Cell> getSameType() {
-        Class<? extends Cell> type = this.getClass();
-        return field.getLivingNeighbours(location).stream().filter(c -> type.isAssignableFrom(c.getClass())).map(type::cast).distinct().collect(Collectors.toList());
+    public void updateState() {
+        alive = nextAlive;
     }
 }

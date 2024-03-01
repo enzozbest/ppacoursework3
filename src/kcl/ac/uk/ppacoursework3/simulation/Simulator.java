@@ -4,6 +4,7 @@ import src.kcl.ac.uk.ppacoursework3.lifeForms.Cell;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.CellFactory;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.LifeForms;
 import src.kcl.ac.uk.ppacoursework3.maths.AliasSampler;
+import src.kcl.ac.uk.ppacoursework3.utils.Randomizer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 public class Simulator {
     private final List<Cell> cells;
     private final Field field;
+    private static Simulator simulatorInstance;
     private int generation;
     public static final int GRID_WIDTH = 100;
     public static final int GRID_HEIGHT = 80;
@@ -42,7 +44,7 @@ public class Simulator {
     public Simulator(int depth, int width) {
         cells = new ArrayList<>();
         field = new Field(depth, width);
-        factory = new CellFactory();
+        factory = CellFactory.getInstance();
         reset();
     }
 
@@ -75,6 +77,7 @@ public class Simulator {
      */
     public void reset() {
         generation = 0;
+        Randomizer.reset();
         cells.clear();
         populate();
     }
@@ -88,7 +91,7 @@ public class Simulator {
             for (int col = 0; col < field.getWidth(); col++) {
                 Location location = new Location(row, col);
                 AliasSampler sampler = new AliasSampler();
-                Cell cell = factory.createCell(LifeForms.getByID(sampler.sample()), field, location);
+                Cell cell = factory.createCell(LifeForms.getByID(sampler.sample()), location, field);
                 cells.add(cell);
             }
         }

@@ -37,7 +37,7 @@ public class Prokaryote extends Cell {
      */
     private Prokaryote(Field field, Location location, Color col) {
         super(field, location, col);
-        factory = new CellFactory();
+        factory = CellFactory.getInstance();
         super.isBasic = true;
         setDead();
     }
@@ -63,7 +63,7 @@ public class Prokaryote extends Cell {
     public void act() {
         sampler = new AliasSampler(getProbabilities(Objects.requireNonNull(Counter.neighbourTypeCount(this)), this));
 
-        Cell cell = factory.createCell(LifeForms.getByID(sampler.sample()), getField(), getLocation());
+        Cell cell = factory.createCell(LifeForms.getByID(sampler.sample()), getLocation(), getField());
         SimulatorView.simulator.getToAdd().add(cell);
         SimulatorView.simulator.getToRemove().add(this);
         getField().place(cell, getLocation());

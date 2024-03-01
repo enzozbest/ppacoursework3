@@ -15,7 +15,6 @@ import java.util.concurrent.Future;
  * This class models this behaviour:
  * Once this Life form has more than 3 neighbours it "bursts", which is modelled as a change of colour.
  * After the Lycoperdon has burst, it takes 3 generations for it to refill. Once it is refilled, it can burst again.
- * <p></p>
  *
  * @author Enzo Bestetti (K23011872), Krystian Augustynowicz(K23000902)
  * @version 2024.02.13

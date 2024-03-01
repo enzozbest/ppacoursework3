@@ -18,15 +18,17 @@ import java.lang.reflect.Constructor;
 public class CellFactory {
     private static final double GRID_SPAWN = 0.70;
 
+    private static CellFactory factory;
+
     /**
      * Create a new cell at location in field.
      *
      * @param type  the LifeForms constant representing which subtype of Cell to create.
-     * @param field the Field where the new cell is to be placed.
      * @param loc   the location within the field.
+     * @param field
      * @return a new Cell object of the specified type.
      */
-    public Cell createCell(LifeForms type, Field field, Location loc) {
+    public Cell createCell(LifeForms type, Location loc, Field field) {
         Cell cell = null;
         String typeName = type.toString().substring(0, 1).toUpperCase() + type.toString().substring(1).toLowerCase();
         try {
@@ -44,8 +46,15 @@ public class CellFactory {
             if (Randomizer.getRandom().nextDouble() > GRID_SPAWN) cell.setDead();
 
         } catch (Exception e) {
-            System.out.println("Error creating cell: " + e.getMessage());
+            System.out.println("Error creating cell: " + e.getMessage() + e.getCause() + e.getStackTrace());
         }
         return cell;
+    }
+
+    public static CellFactory getInstance() {
+        if (factory == null) {
+            factory = new CellFactory();
+        }
+        return new CellFactory();
     }
 }

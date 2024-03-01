@@ -16,7 +16,6 @@ import java.util.List;
  * Krystian Augustynowicz (K23000902)
  * @version 2024.02.12
  */
-
 public class Mycoplasma extends Cell {
 
     /**
@@ -34,9 +33,9 @@ public class Mycoplasma extends Cell {
      * Create a new Mycoplasma with a specified colour by calling the superclass constructor.
      * Initialise fields and set this cell as a non-basic life form.
      *
-     * @param field
-     * @param location
-     * @param col
+     * @param field    the field of cells this Mycoplasma is in.
+     * @param location the location of this Mycoplasma.
+     * @param col      the colour of this Mycoplasma.
      */
     private Mycoplasma(Field field, Location location, Color col) {
         super(field, location, col);
