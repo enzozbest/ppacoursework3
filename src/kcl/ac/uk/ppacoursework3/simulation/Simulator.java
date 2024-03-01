@@ -1,13 +1,13 @@
 package src.kcl.ac.uk.ppacoursework3.simulation;
 
-import javafx.scene.paint.Color;
-import src.kcl.ac.uk.ppacoursework3.GUI.Field;
-import src.kcl.ac.uk.ppacoursework3.GUI.SimulatorView;
+import src.kcl.ac.uk.ppacoursework3.lifeForms.Cell;
+import src.kcl.ac.uk.ppacoursework3.lifeForms.CellFactory;
+import src.kcl.ac.uk.ppacoursework3.lifeForms.LifeForms;
+import src.kcl.ac.uk.ppacoursework3.maths.AliasSampler;
+import src.kcl.ac.uk.ppacoursework3.utils.Randomizer;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 
 /**
@@ -17,29 +17,34 @@ import java.util.Random;
  * @author David J. Barnes, Michael Kölling & Jeffery Raphael
  * @version 2024.02.03
  */
-
 public class Simulator {
-
-    private static final double MYCOPLASMA_ALIVE_PROB = 0.25;
-    private List<Cell> cells;
-    private Field field;
+    private final List<Cell> cells;
+    private final Field field;
+    private static Simulator simulatorInstance;
     private int generation;
+    public static final int GRID_WIDTH = 100;
+    public static final int GRID_HEIGHT = 80;
+    private final CellFactory factory;
+    private List<Cell> toAdd;
+    private List<Cell> toRemove;
 
     /**
      * Construct a simulation field with default size.
      */
     public Simulator() {
-        this(SimulatorView.GRID_HEIGHT, SimulatorView.GRID_WIDTH);
+        this(GRID_HEIGHT, GRID_WIDTH);
     }
 
     /**
      * Create a simulation field with the given size.
+     *
      * @param depth Depth of the field. Must be greater than zero.
      * @param width Width of the field. Must be greater than zero.
      */
     public Simulator(int depth, int width) {
         cells = new ArrayList<>();
         field = new Field(depth, width);
+        factory = CellFactory.getInstance();
         reset();
     }
 
@@ -48,15 +53,23 @@ public class Simulator {
      * Iterate over the whole field updating the state of each life form.
      */
     public void simOneGeneration() {
+        toAdd = new ArrayList<>();
+        toRemove = new ArrayList<>();
         generation++;
-        for (Iterator<Cell> it = cells.iterator(); it.hasNext(); ) {
-            Cell cell = it.next();
+
+        for (Cell cell : cells) {
             cell.act();
         }
 
         for (Cell cell : cells) {
-          cell.updateState();
+            cell.updateState();
         }
+
+        cells.addAll(toAdd);
+        cells.removeAll(toRemove);
+
+        toAdd.clear();
+        toRemove.clear();
     }
 
     /**
@@ -64,49 +77,65 @@ public class Simulator {
      */
     public void reset() {
         generation = 0;
+        Randomizer.reset();
         cells.clear();
         populate();
     }
 
     /**
-     * Randomly populate the field live/dead life forms
+     * Randomly populate the field with live/dead life forms
      */
     private void populate() {
-      Random rand = Randomizer.getRandom();
-      field.clear();
-      for (int row = 0; row < field.getDepth(); row++) {
-        for (int col = 0; col < field.getWidth(); col++) {
-          Location location = new Location(row, col);
-          Mycoplasma myco = new Mycoplasma(field, location, Color.ORANGE);
-          if (rand.nextDouble() <= MYCOPLASMA_ALIVE_PROB) {
-            cells.add(myco);
-          }
-          else {
-            myco.setDead();
-            cells.add(myco);
-          }
+        field.clear();
+        for (int row = 0; row < field.getDepth(); row++) {
+            for (int col = 0; col < field.getWidth(); col++) {
+                Location location = new Location(row, col);
+                AliasSampler sampler = new AliasSampler();
+                Cell cell = factory.createCell(LifeForms.getByID(sampler.sample()), location, field);
+                cells.add(cell);
+            }
         }
-      }
     }
 
+
     /**
-     * Pause for a given time.
-     * @param millisec  The time to pause for, in milliseconds
+     * Delay introduced between the showing of one generation and the next on the GUI.
+     *
+     * @param millisec The time to pause for, in milliseconds
      */
     public void delay(int millisec) {
         try {
             Thread.sleep(millisec);
-        }
-        catch (InterruptedException ie) {
-            // wake up
+        } catch (InterruptedException exception) {
+            //wake up
         }
     }
-    
+
+    /**
+     * @return the field where a Cell object is located.
+     */
     public Field getField() {
         return field;
     }
 
+    /**
+     * @return the current generation.
+     */
     public int getGeneration() {
         return generation;
+    }
+
+    /**
+     * @return the list of new cells created to add to the list of current cells.
+     */
+    public List<Cell> getToAdd() {
+        return toAdd;
+    }
+
+    /**
+     * @return the list of cells to remove from the list of current cells.
+     */
+    public List<Cell> getToRemove() {
+        return toRemove;
     }
 }
