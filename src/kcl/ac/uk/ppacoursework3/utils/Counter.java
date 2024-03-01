@@ -7,12 +7,11 @@ import java.util.List;
 
 /**
  * Provide a counter for a participant in the simulation.
- * This includes an identifying string and a count of how
- * many participants of this type currently exist within
+ * This includes an identifying Class and a count of how many participants of this type currently exist within
  * the simulation.
  *
  * @author David J. Barnes and Michael Kölling, Enzo Bestetti(K23011872), Krystian Augustynowicz(K23000902)
- * @version 2024.02.12
+ * @version 2024.03.01
  */
 public class Counter {
     private final String name;
@@ -51,7 +50,7 @@ public class Counter {
         }
         return typeCount;
     }
-    
+
     /**
      * @return The current count for this type.
      */

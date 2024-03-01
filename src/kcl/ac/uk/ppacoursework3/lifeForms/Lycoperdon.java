@@ -12,12 +12,12 @@ import java.util.concurrent.Future;
 /**
  * Lycoperdon is the genus of a puffball fungus, Lycoperdum perlatum. This type of fungus bursts on impact,
  * releasing spores into the air.
- * This class models this behaviour:
- * Once this Life form has more than 3 neighbours it "bursts", which is modelled as a change of colour.
- * After the Lycoperdon has burst, it takes 3 generations for it to refill. Once it is refilled, it can burst again.
+ * This class aims to model this behaviour: Once this life form has more than 3 neighbours it "bursts", which is
+ * modelled as a change of colour. After the Lycoperdon has burst, it takes 3 generations for it to refill.
+ * Once it is refilled, it can burst again.
  *
  * @author Enzo Bestetti (K23011872), Krystian Augustynowicz(K23000902)
- * @version 2024.02.13
+ * @version 2024.03.01
  */
 public class Lycoperdon extends Cell {
     private int colisionCount;
@@ -45,16 +45,17 @@ public class Lycoperdon extends Cell {
     }
 
     /**
-     * Rule set for this Life form:
-     * 1. If it has more than 3 living neighbours of any type it changes colour to Color.GREEN
-     * 2. If Lycoperdon is alive, and it has both more than 1 and fewer than 3 neighbours,
-     * it remains alive in the next generation.
-     * 3. If Lycoperdon is dead, and it has exactly 3 neighbours, it comes alive in the next generation.
+     * Define the behaviours of the Lycoperdon cell. Check the number of neighbours and the colour of the cell.
+     * <p>
+     * If the cell is "full" (it is purple), check number of neighbours to determine if the cell should burst or not.
+     * If so, change the colour to green and start a tracker to refill the Lycoperdon.
+     * If the cell is green, check if the tracker has finished, if so, change the colour back to purple ("refill").
      */
     @Override
     public void act() {
         List<Cell> neighbours = getSameType();
         colisionCount = getField().getLivingNeighbours(getLocation()).size(); //Get the number of "things" touching the Lycoperdon
+
         setNextState(false); //Set the next state to false by default
 
         if (!getColor().equals(Color.GREEN)) {

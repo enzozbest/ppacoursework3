@@ -4,7 +4,7 @@ package src.kcl.ac.uk.ppacoursework3.simulation;
  * Represent a location in a rectangular grid.
  *
  * @author David J. Barnes and Michael Kölling, Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
- * @version 2024.02.12
+ * @version 2024.03.01
  */
 
 public record Location(int row, int col) {

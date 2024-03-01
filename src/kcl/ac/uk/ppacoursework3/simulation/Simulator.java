@@ -14,13 +14,12 @@ import java.util.List;
  * A Life (Game of Life) simulator, first described by British mathematician
  * John Horton Conway in 1970.
  *
- * @author David J. Barnes, Michael Kölling & Jeffery Raphael
- * @version 2024.02.03
+ * @author David J. Barnes, Michael Kölling, Jeffery Raphael, Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
+ * @version 2024.03.01
  */
 public class Simulator {
     private final List<Cell> cells;
     private final Field field;
-    private static Simulator simulatorInstance;
     private int generation;
     public static final int GRID_WIDTH = 100;
     public static final int GRID_HEIGHT = 80;

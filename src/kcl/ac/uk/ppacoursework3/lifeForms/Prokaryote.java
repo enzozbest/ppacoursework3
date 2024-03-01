@@ -33,7 +33,7 @@ public class Prokaryote extends Cell {
      *
      * @param field    The field currently occupied.
      * @param location The location within the field.
-     * @param col
+     * @param col      The colour of the cell.
      */
     private Prokaryote(Field field, Location location, Color col) {
         super(field, location, col);
@@ -54,8 +54,8 @@ public class Prokaryote extends Cell {
 
     /**
      * Create a new cell based on the probabilities returned by the factory. The probabilities are based on the
-     * number of neighbours of each type the Prokaryote has. The more neighbours of a certain type, the more likely
-     * it is that the Prokaryote will become that type, but it is not guaranteed.
+     * number of neighbours of each type that the Prokaryote has. The more neighbours of a certain type, the more likely
+     * it is that the Prokaryote will become that type, but this is never guaranteed.
      * If the new cell is a Prokaryote, this cell will be replaced by that new Prokaryote, but in our simulation this is
      * equivalent to doing nothing.
      */

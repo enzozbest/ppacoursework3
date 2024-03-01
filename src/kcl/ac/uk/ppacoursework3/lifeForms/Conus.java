@@ -10,19 +10,20 @@ import java.util.function.Predicate;
 
 /**
  * This class represents a non-deterministic cell in the simulation, a life form inspired by the
- * Conus genus of sea snails, which have a non-deterministic pattern on their shells.
- * This class inherits from NonDeterministicCell and as such has a set of rules that can be applied to it at any given point in time.
- * The rules for this life form are represented as Predicate objects and are stored in a list.
+ * Conus genus of sea snails, which have a pattern on their shells which arises from a simple set of rules.
+ * This class inherits from NonDeterministicCell and as such has a set of rules that can be applied to it at any given
+ * point in time. The rules for this life form are represented as Predicate objects and are stored in a list.
  * <p>
- * When a Conus object is created, its rule set is initialised with two rules:
+ * When a Conus object is created, its behaviours are initialised with two rule-sets:
  * 1. If Conus is alive, and it has exactly 4 neighbours, it remains alive in the next generation.
  * 2. If Conus is dead, and it has 2 or more neighbours, it comes alive in the next generation.
+ * In all other scenarions, a Conus dies/remains alive.
  * <p>
- * These are the Predicate objects used by the act() method of the superclass to determine whether this
- * cell is alive or dead in the next generation.
+ * The Predicate objects are used by the act() method of the superclass to determine whether this cell is alive or dead
+ * in the next generation.
  *
  * @author Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
- * @version 2024.02.16
+ * @version 2024.03.01
  */
 public class Conus extends NonDeterministicCell {
 
@@ -47,17 +48,17 @@ public class Conus extends NonDeterministicCell {
     private Conus(Field field, Location loc, Color col) {
         super(field, loc, col);
         sampler = new AliasSampler(new double[]{0.5, 0.5}); //Set probabilities for each rule in the set, in order.
-        rules = createRuleSet();
+        rules = createBehaviours();
         currentRule = rules.get(sampler.sample());
     }
 
     /**
-     * Create the rule set for this life form.
+     * Create the behaviours for this life form.
      *
-     * @return The rule set as list of Predicate objects that are used to determine whether this cell is alive or dead
+     * @return The behaviours as list of Predicate objects that are used to determine whether this cell is alive or dead
      * in the next generation.
      */
-    private List<Predicate<Cell>> createRuleSet() {
+    private List<Predicate<Cell>> createBehaviours() {
         return List.of(
                 cell -> {
                     boolean nextAlive = false;

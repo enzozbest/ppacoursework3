@@ -5,7 +5,7 @@ package src.kcl.ac.uk.ppacoursework3.lifeForms;
  * Each life form is associated with an integer ID.
  *
  * @author Enzo Bestetti (K23011872), Krystian Augustynowicz(K23000902)
- * @version 2024.02.12
+ * @version 2024.03.01
  */
 public enum LifeForms {
 
@@ -25,7 +25,7 @@ public enum LifeForms {
     /**
      * Return a LifeForms constant based on the provided ID.
      * If there is a match, return that life form.
-     * Otherwise, return the DEFAULT life form.
+     * Otherwise, return the PROKARYOTE life form.
      *
      * @param id the integer identification number you wish to match with a life form
      * @return the Life form associated with the given ID

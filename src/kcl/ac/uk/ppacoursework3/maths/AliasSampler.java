@@ -9,13 +9,9 @@ import java.util.Random;
  * The Alias method is used to choose a number from a list each with a given bias.
  * These numbers, in this project, are used as indexes into an Enum (LifeForms), which contains the enumeration
  * of all the Life forms implemented.
- * The user can call the getType() method from this class to choose a random LifeForm with specified biases.
- * <p></p>
- * In this project, this class is strictly used with either the default biases or with biases generated automatically
- * for each living cell based on its living neighbours at each generation.
  *
  * @author Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
- * @version 2024.02.12
+ * @version 2024.03.01
  */
 public class AliasSampler {
 

@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author David J. Barnes, Michael Kölling & Jeffery Raphael, Enzo Bestetti (K23011872),
  * Krystian Augustynowicz (K23000902)
- * @version 2024.02.12
+ * @version 2024.03.01
  */
 public class Mycoplasma extends Cell {
 
@@ -54,20 +54,21 @@ public class Mycoplasma extends Cell {
                 count++;
             }
         }
-        return count >= 3;
+        return count >= 2;
     }
 
     /**
-     * Rule set for this Life form:
-     * 1. If Mycoplasma is alive, and it has both more than 1 and fewer than 3 neighbours,
-     * it remains alive in the next generation.
-     * 2. If Mycoplasma is dead, and it has exactly 3 neighbours, it comes alive in the next generation.
+     * Implement the rules for Mycoplasma's life and death.
+     * If the Mycoplasma has more than 2 diseased neighbours, it becomes diseased.
+     * The behaviour defined in this method only applies to non-diseased Mycoplasma cells.
      */
     public void act() {
         if (fallIll()) {
+            //Cell becomes diseased
             getField().place(new DiseasedCell(getField(), getLocation()), getLocation());
             return;
         }
+
         List<Cell> neighbours = getSameType();
         setNextState(false);
 

@@ -7,8 +7,8 @@ import javafx.scene.layout.GridPane;
 import java.util.List;
 
 /**
- * This class represents a custom dialog box that prompts the user to enter the number of generations and the delay between
- * generations. It is used to set the parameters for the simulation.
+ * This class represents a custom dialog box that prompts the user to enter the number of generations and the delay
+ * between generations. It is used to set the parameters for the simulation.
  * <p>
  * The user is prompted to enter the number of generations and the delay between generations. Validation is performed to
  * ensure that the user enters a positive integer for the number of generations and a decimal value for the delay.
@@ -17,7 +17,7 @@ import java.util.List;
  * the values again.
  *
  * @author Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
- * @version 2024.02.29
+ * @version 2024.03.01
  */
 public class TypedInputDialog extends Dialog<List<Number>> {
 
@@ -25,7 +25,8 @@ public class TypedInputDialog extends Dialog<List<Number>> {
     private TextField delay;
 
     /**
-     * Constructor for the TypedInputDialog class. It sets the size of the dialog box and the content of the dialog box.
+     * Constructor for the TypedInputDialog class.
+     * It sets the size of the dialog box and the content of the dialog box.
      * The content of the dialog box is a GridPane that contains two labels and two text fields. The labels prompt the
      * user to enter the number of generations and the delay between generations. The text fields allow the user to enter
      * the values.
@@ -43,6 +44,7 @@ public class TypedInputDialog extends Dialog<List<Number>> {
         pane.setContent(getGridPane());
 
         ButtonType okButton = new ButtonType("Done", ButtonBar.ButtonData.OK_DONE);
+
         pane.getButtonTypes().addAll(okButton);
         setResultConverter(this::convertButtonData);
     }
@@ -56,9 +58,9 @@ public class TypedInputDialog extends Dialog<List<Number>> {
      */
     private GridPane getGridPane() {
         numGen = new TextField();
-        Label numGenLabel = new Label("Number of Generations:");
-
         delay = new TextField();
+
+        Label numGenLabel = new Label("Number of Generations:");
         Label delayLabel = new Label("Simulation Speed (seconds):");
 
         GridPane gridPane = new GridPane();
@@ -91,18 +93,27 @@ public class TypedInputDialog extends Dialog<List<Number>> {
         List<Number> ret;
 
         try {
-            ret = List.of(Integer.parseInt(numGen.getText()), Double.parseDouble(delay.getText()));
+            int gen = Integer.parseInt(numGen.getText());
+            double delayValue = Double.parseDouble(delay.getText());
+
+            if (gen <= 0 || delayValue <= 0) {
+                throw new NumberFormatException();
+            }
+
+            ret = List.of(gen, delayValue);
             return ret;
         } catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Invalid Input");
             alert.setHeaderText("Invalid Inputs");
-            alert.setContentText("Please enter a positive integer for the number of generations and a decimal value for the delay.");
+            alert.setContentText("Enter a positive integer for the number of generations \n and a decimal value for the delay.");
             alert.showAndWait();
         }
+       /* Use recursion to prompt the user to enter the values again until valid inputs are entered and pass the results
+        along a "chain" of recursive calls*/
         TypedInputDialog alternate = new TypedInputDialog();
         alternate.showAndWait();
-        return alternate.getResult(); //use recursion to prompt the user to enter the values again until valid inputs are entered
+        return alternate.getResult();
     }
 }
 

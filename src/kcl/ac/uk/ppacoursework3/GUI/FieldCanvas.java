@@ -11,7 +11,7 @@ import java.io.IOException;
  * Provide a graphical view of the field. This is a custom node for the user interface.
  *
  * @author Jeffery Raphael, Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
- * @version 2024.02.12
+ * @version 2024.03.01
  */
 public class FieldCanvas extends Canvas {
 
@@ -30,6 +30,7 @@ public class FieldCanvas extends Canvas {
         this.height = height;
         this.width = width;
 
+        //Load custom FXML type for the FieldCanvas class.
         FXMLLoader loader = new FXMLLoader(getClass().getResource("canvas-controller.fxml"));
         loader.setRoot(this);
         loader.setController(this);
@@ -37,7 +38,6 @@ public class FieldCanvas extends Canvas {
         try {
             loader.load();
         } catch (IOException e) {
-            System.out.println("Error loading canvas-controller.fxml" + e.getMessage());
         }
     }
 
