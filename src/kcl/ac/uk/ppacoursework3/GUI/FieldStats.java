@@ -12,7 +12,7 @@ import java.util.HashMap;
  * for any class of object that is found within the field.
  *
  * @author David J. Barnes and Michael Kölling, Enzo Bestetti (K23011872), Krystian Augustynowicz(K23000902)
- * @version 2024.02.29
+ * @version 2024.03.01
  */
 
 public class FieldStats {
@@ -32,7 +32,7 @@ public class FieldStats {
     /**
      * Get details of what is in the field.
      *
-     * @return A HashMap containing each life form contained in the field and their respective counter.
+     * @return A HashMap containing the life forms in the field and their respective counter.
      */
     public HashMap<Class, Counter> getPopulationDetails(Field field) {
         if (!countsValid) generateCounts(field);
@@ -80,14 +80,12 @@ public class FieldStats {
      */
     private void generateCounts(Field field) {
         reset();
-
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
                 Cell cell = field.getObjectAt(row, col);
                 incrementCount(cell.getClass());
             }
         }
-
         countsValid = true;
     }
 }

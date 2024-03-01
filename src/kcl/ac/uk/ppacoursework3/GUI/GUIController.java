@@ -25,7 +25,7 @@ import java.util.List;
  * SimulatorView class to actually perform the simulation tasks.
  *
  * @author Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
- * @version 2024.02.29
+ * @version 2024.03.01
  */
 public class GUIController {
 
@@ -39,65 +39,55 @@ public class GUIController {
     private Label genLabel, mycoLabel, lycoLabel, conLabel, disLabel, phaLabel, metaLabel;
     private final HashMap<Class, Counter> population;
     private int mycoCount, lycoCount, conCount, disCount, phaCount, metaCount;
-    public static volatile boolean shouldRun; //volatile to ensure inter-thread visibility
 
     /**
      * Create the GUI controller with a reference to the SimulatorView object that is responsible for the simulation.
-     * Initialise fields.
      *
      * @param view the SimulatorView object that is responsible for the simulation logic.
      */
     public GUIController(SimulatorView view) {
         this.view = view;
-        shouldRun = false;
         simulator = SimulatorView.simulator;
         population = view.getStats().getPopulationDetails(simulator.getField());
     }
 
     /**
-     * This method is called when the user clicks the "Start" button. It will start the simulation if it is not already
-     * running.
-     * It creates a dialog box to get user input for the number of generations and the delay between each
-     * generation. It then disables the buttons to prevent the user from clicking them while the simulation is running,
-     * which could cause problems, and starts the simulation with the provided parameters.
-     * Once the simulation is complete, it re-enables the buttons and returns control to the user.
+     * This method is called when the user clicks the "Start" button. It will start the simulation with the parameters
+     * provided by the user (number of generations and delay between generations) in a dialog box.
+     * It also disables all GUI buttons to prevent the user from clicking them while the simulation is running, and
+     * re-enables them once the simulation is complete.
      *
      * @param actionEvent the button click
      */
     @FXML
     private void clickStart(ActionEvent actionEvent) {
-        shouldRun = !shouldRun;
+        TypedInputDialog dialog = createInputDialog();
+        dialog.showAndWait(); //Wait for user input before starting the simulation.
 
-        if (shouldRun) {
-            TypedInputDialog dialog = createInputDialog();
-            dialog.showAndWait();
-            disableButtons();
+        disableButtons();
 
-            List<Number> dialogResults = dialog.getResult(); //Get user input from the dialog box
+        List<Number> dialogResults = dialog.getResult(); //Retrieve user input from the dialog box
+        int gen = dialogResults.get(0).intValue(); //Use the number of generations as an int
+        double delay = dialogResults.get(1).doubleValue(); //Use the delay as a double
+        int millisecDelay = (int) (delay * 1000); //Convert the delay to milliseconds
 
-            int gen = dialogResults.get(0).intValue(); //Use the number of generations as an int
-            double delay = dialogResults.get(1).doubleValue(); //Use the delay as a double
+        view.simulate(gen, millisecDelay); //Start the simulation with the user input
 
-            int milisecDelay = (int) (delay * 1000); //Convert the delay to milliseconds
+        //Create a new thread to check if the simulation is complete, and re-enable the buttons when it is.
+        GenerationTracker.EXECUTOR.submit(() -> {
+            while (!view.getSimulationComplete().isDone()) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
 
-            view.simulate(gen, milisecDelay);
-
-            GenerationTracker.executor.submit(() -> {
-                while (!view.getSimulationComplete().isDone()) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-
-                    }
                 }
-                Platform.runLater(this::enableButtons);
-            });
-        }
+            }
+            Platform.runLater(this::enableButtons);
+        });
     }
 
     /**
-     * This method is called when the user clicks the "Step" button. It will simulate one generation of the simulation
-     * if the simulation is not currently running.
+     * This method is called when the user clicks the "Step" button. It will simulate one generation of the simulation.
      * It also invokes the updateCanvas() method to update the GUI with the state of the simulation after the next
      * generation is simulated.
      *
@@ -105,25 +95,19 @@ public class GUIController {
      */
     @FXML
     private void clickStep(ActionEvent actionEvent) {
-        if (shouldRun) {
-            return;
-        }
         simulator.simOneGeneration();
         this.updateCanvas();
     }
 
     /**
-     * This method is called when the user clicks the "Reset" button. It will reset the simulation if the simulation is
-     * not currently running. This means that the field will be cleared and the generation counter will be reset to 0.
+     * This method is called when the user clicks the "Reset" button. It will reset the simulation
+     * This means that the field will be cleared and the generation counter will be reset to 0.
      * The grid is populated again and the GUI is updated to reflect the new state of the simulation.
      *
      * @param actionEvent the button click
      */
     @FXML
     private void clickReset(ActionEvent actionEvent) {
-        if (shouldRun) {
-            return;
-        }
         view.reset();
         startButton.setText("Start");
         this.updateCanvas();
@@ -186,10 +170,8 @@ public class GUIController {
         mycoCount = population.get(Mycoplasma.class).getCount();
         lycoCount = population.get(Lycoperdon.class).getCount();
         conCount = population.get(Conus.class).getCount();
-
         phaCount = population.get(Phage.class).getCount();
         metaCount = population.get(Metamorph.class).getCount();
-
         if (population.get(DiseasedCell.class) == null) {
             disCount = 0;
             return;

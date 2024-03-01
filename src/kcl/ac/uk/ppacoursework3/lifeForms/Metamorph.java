@@ -11,14 +11,14 @@ import java.util.concurrent.Future;
 import java.util.function.Predicate;
 
 /**
- * A class representing a cell that can change its behaviour based on the generation.
- * It has two rulesets, one for the first 10 generations and another for the rest.
+ * A class representing a cell that can change its behaviour based on the number of generations it has been alive for.
+ * It has two behaviours, one for the first 10 generations, and another for the rest.
  * We keep track of the generation using a GenerationTracker object. This object is created with the current generation
  * and the number of generations to keep track of. It returns a Future object that is used to check if 10 generations
- * have passed. If so, we switch to the second ruleset.
+ * have passed. If so, we switch to the second behaviour.
  *
  * @author Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
- * @version 2024.02.24
+ * @version 2024.03.01
  */
 public class Metamorph extends Cell {
 
@@ -28,15 +28,15 @@ public class Metamorph extends Cell {
     /**
      * Create a new cell at location in field.
      * <p>
-     * We initialise the ruleset with two rules, one for the first 10 generations and another for the rest.
-     * The first rule is B8/S45 and the second is B1/S1, as can be seen in the code. The rules are implemented as
-     * Predicate<Cell> objects, and we store the whole ruleset as a list. In the act() method, we check if 10 generations
+     * Initialise the behaviours with two rules, one for the first 10 generations and another for the rest.
+     * The first one is B8/S45 and the second is B1/S1, as can be seen in the code. The rules are implemented as
+     * Predicate<Cell> objects, and we store them as a list. In the act() method, we check if 10 generations
      * have passed and choose the correct rules to apply. The act() method only tests the Predicates for the current
-     * cell.
+     * cell to determine the next state.
      *
      * @param field    The field currently occupied.
      * @param location The location within the field.
-     * @param col
+     * @param col      The colour of the cell.
      */
     private Metamorph(Field field, Location location, Color col) {
         super(field, location, col);

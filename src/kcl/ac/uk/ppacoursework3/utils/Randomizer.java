@@ -9,7 +9,7 @@ import java.util.Random;
  * behaviour every time.
  *
  * @author David J. Barnes and Michael Kölling, Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
- * @version 2024.02.12
+ * @version 2024.03.01
  */
 public class Randomizer {
     private static final int SEED = 1111;

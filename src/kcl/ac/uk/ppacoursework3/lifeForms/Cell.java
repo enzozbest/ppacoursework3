@@ -13,18 +13,17 @@ import java.util.stream.Collectors;
  * A class representing the shared characteristics of all forms of life.
  *
  * @author David J. Barnes, Michael Kölling & Jeffery Raphael, Enzo Bestetti(K23011872), Krystian Augustynowicz(K23000902)
- * @version 2024.02.12
+ * @version 2024.03.01
  */
 public abstract class Cell {
+    protected boolean isBasic;
+    protected GenerationTracker tracker;
+    protected AliasSampler sampler;
     private boolean alive;
-
     private boolean nextAlive; // The state of the cell in the next iteration
     private final Field field;
-    protected boolean isBasic;
     private Location location;
     private Color color = Color.WHITE;
-    protected AliasSampler sampler;
-    protected GenerationTracker tracker;
 
     /**
      * Create a new cell at location in field.
@@ -32,7 +31,7 @@ public abstract class Cell {
      * @param field    The field currently occupied.
      * @param location The location within the field.
      */
-    public Cell(Field field, Location location, Color col) {
+    protected Cell(Field field, Location location, Color col) {
         isBasic = true;
         alive = true;
         nextAlive = false;
@@ -43,7 +42,7 @@ public abstract class Cell {
 
     /**
      * Make this cell act - that is: the cell decides it's status in the
-     * next generation.
+     * next generation and/or performs a given function.
      */
     public abstract void act();
 

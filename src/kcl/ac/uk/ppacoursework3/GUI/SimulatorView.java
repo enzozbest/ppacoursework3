@@ -24,7 +24,7 @@ import java.util.concurrent.Future;
  * cell at a given location.
  *
  * @author David J. Barnes, Michael Kölling & Jeffery Raphael, Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
- * @version 2024.02.12
+ * @version 2024.03.01
  */
 public class SimulatorView extends Application {
     private FieldCanvas fieldCanvas;
@@ -43,29 +43,28 @@ public class SimulatorView extends Application {
         stats = new FieldStats();
         controller = new GUIController(this);
 
+        //Load the FXML file and set its controller to build the GUI.
         FXMLLoader loader = new FXMLLoader(getClass().getResource("simulator-view.fxml"));
         loader.setController(controller);
-
         try {
             Group root = loader.load();
 
             BorderPane pane = (BorderPane) root.getChildren().get(0);
-
             pane.setPadding(new Insets(10, 10, 10, 10));
 
             fieldCanvas = new FieldCanvas(600, 600);
             fieldCanvas.setScale(Simulator.GRID_HEIGHT, Simulator.GRID_WIDTH);
-            updateCanvas(simulator.getField());
 
             pane.setCenter(fieldCanvas);
 
+            updateCanvas(simulator.getField());
+
             Scene scene = new Scene(root, GUIController.WIN_WIDTH, GUIController.WIN_HEIGHT);
+
             stage.setScene(scene);
             stage.setTitle("Game of Life Simulation");
-
             stage.show();
         } catch (IOException e) {
-            System.out.println("Error loading FXML file" + e.getMessage() + e.getCause() + e.getStackTrace());
         }
     }
 
@@ -97,7 +96,7 @@ public class SimulatorView extends Application {
 
     /**
      * Run the simulation from its current state for the given number of
-     * generations.
+     * generations with the specified delay between them, in milliseconds.
      *
      * @param numGenerations The number of generations to run for.
      * @param millisecDelay  The delay between each generation in milliseconds.
@@ -112,12 +111,11 @@ public class SimulatorView extends Application {
                     Platform.runLater(() -> updateCanvas(simulator.getField())); //Updates the GUI
                     simulator.delay(10); //ensures the GUI has time to update before simulating the next generation.
                 }
-                GUIController.shouldRun = false;
                 return null;
             }
         };
 
-        simulationComplete = GenerationTracker.executor.submit(simulation);
+        simulationComplete = GenerationTracker.EXECUTOR.submit(simulation);
     }
 
     /**

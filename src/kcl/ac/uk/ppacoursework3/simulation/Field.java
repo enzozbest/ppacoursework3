@@ -13,7 +13,7 @@ import java.util.Random;
  * Each position stores a single cell
  *
  * @author David J. Barnes, Michael Kölling & Jeffery Raphael, Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
- * @version 2024.02.12
+ * @version 2024.03.01
  */
 public class Field {
     private static final Random rand = Randomizer.getRandom();
