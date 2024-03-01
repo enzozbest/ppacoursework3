@@ -1,7 +1,8 @@
 package src.kcl.ac.uk.ppacoursework3.GUI;
 
-import src.kcl.ac.uk.ppacoursework3.simulation.Cell;
-import src.kcl.ac.uk.ppacoursework3.simulation.Counter;
+import src.kcl.ac.uk.ppacoursework3.lifeForms.Cell;
+import src.kcl.ac.uk.ppacoursework3.simulation.Field;
+import src.kcl.ac.uk.ppacoursework3.utils.Counter;
 
 import java.util.HashMap;
 
@@ -10,13 +11,13 @@ import java.util.HashMap;
  * of a field. It is flexible: it will create and maintain a counter
  * for any class of object that is found within the field.
  *
- * @author David J. Barnes and Michael Kölling
- * @version 2016.02.29
+ * @author David J. Barnes and Michael Kölling, Enzo Bestetti (K23011872), Krystian Augustynowicz(K23000902)
+ * @version 2024.02.29
  */
 
 public class FieldStats {
-    
-    private HashMap<Class, Counter> counters;
+
+    private final HashMap<Class, Counter> counters;
     private boolean countsValid;
 
     /**
@@ -30,21 +31,13 @@ public class FieldStats {
 
     /**
      * Get details of what is in the field.
-     * @return A string describing what is in the field.
+     *
+     * @return A HashMap containing each life form contained in the field and their respective counter.
      */
-    public String getPopulationDetails(Field field) {
-        StringBuffer buffer = new StringBuffer();
-        if (!countsValid) {
-            generateCounts(field);
-        }
-        for (Class key : counters.keySet()) {
-            Counter info = counters.get(key);
-            buffer.append(info.getName());
-            buffer.append(": ");
-            buffer.append(info.getCount());
-            buffer.append(' ');
-        }
-        return buffer.toString();
+    public HashMap<Class, Counter> getPopulationDetails(Field field) {
+        if (!countsValid) generateCounts(field);
+
+        return counters;
     }
 
     /**
@@ -61,16 +54,13 @@ public class FieldStats {
 
     /**
      * Increment the count for one class of life
+     *
      * @param cellClass The class of cell to increment.
      */
     public void incrementCount(Class cellClass) {
-        Counter count = counters.get(cellClass);
+        //Use function computeIfAbsent to create a new counter if the cellClass is not present in the map.
+        Counter count = counters.computeIfAbsent(cellClass, c -> new Counter(c.getName()));
 
-        if (count == null) {
-            // We do not have a counter for this species yet. Create one.
-            count = new Counter(cellClass.getName());
-            counters.put(cellClass, count);
-        }
         count.increment();
     }
 
@@ -81,42 +71,23 @@ public class FieldStats {
         countsValid = true;
     }
 
-    /**
-     * Determine whether the simulation is still viable.
-     * I.e., should it continue to run.
-     * @return true If there is more than one life form alive
-     */
-    public boolean isViable(Field field) {
-        int nonZero = 0;
-        if (!countsValid) {
-            generateCounts(field);
-        }
-        for (Class key : counters.keySet()) {
-            Counter info = counters.get(key);
-            if (info.getCount() > 0) {
-                nonZero++;
-            }
-        }
-
-        return nonZero >= 1;
-    }
 
     /**
      * Generate counts of the number of cells.
      * These are not kept up to date.
+     *
      * @param field The field to generate the stats for.
      */
     private void generateCounts(Field field) {
         reset();
+
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
                 Cell cell = field.getObjectAt(row, col);
-
-                if (cell != null) {
-                    incrementCount(cell.getClass());
-                }
+                incrementCount(cell.getClass());
             }
         }
+
         countsValid = true;
     }
 }

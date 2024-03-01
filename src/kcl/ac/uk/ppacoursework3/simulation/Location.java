@@ -3,40 +3,35 @@ package src.kcl.ac.uk.ppacoursework3.simulation;
 /**
  * Represent a location in a rectangular grid.
  *
- * @author David J. Barnes and Michael Kölling
- * @version 2016.02.29
+ * @author David J. Barnes and Michael Kölling, Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
+ * @version 2024.02.12
  */
 
-public class Location {
-
-    private int row;
-    private int col;
+public record Location(int row, int col) {
 
     /**
      * Represent a row and column.
+     *
      * @param row The row.
      * @param col The column.
      */
-    public Location(int row, int col) {
-        this.row = row;
-        this.col = col;
+    public Location {
     }
 
     /**
      * Implement content equality.
      */
     public boolean equals(Object obj) {
-        if (obj instanceof Location) {
-            Location other = (Location) obj;
-            return row == other.getRow() && col == other.getCol();
-        }
-        else {
+        if (obj instanceof Location other) {
+            return row == other.row() && col == other.col();
+        } else {
             return false;
         }
     }
 
     /**
      * Return a string of the form row,column
+     *
      * @return A string representation of the location.
      */
     public String toString() {
@@ -47,6 +42,7 @@ public class Location {
      * Use the top 16 bits for the row value and the bottom for
      * the column. Except for very big grids, this should give a
      * unique hash code for each (row, col) pair.
+     *
      * @return A hashcode for the location.
      */
     public int hashCode() {
@@ -56,14 +52,16 @@ public class Location {
     /**
      * @return The row.
      */
-    public int getRow() {
+    @Override
+    public int row() {
         return row;
     }
 
     /**
      * @return The column.
      */
-    public int getCol() {
+    @Override
+    public int col() {
         return col;
     }
 }
