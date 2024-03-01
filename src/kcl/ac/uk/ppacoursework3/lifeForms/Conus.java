@@ -40,9 +40,9 @@ public class Conus extends NonDeterministicCell {
     /**
      * Create a new Conus by calling the superclass constructor.
      *
-     * @param field
-     * @param loc
-     * @param col
+     * @param field the field of cells
+     * @param loc   the location of the cell in the field
+     * @param col   the colour of the cell
      */
     private Conus(Field field, Location loc, Color col) {
         super(field, loc, col);

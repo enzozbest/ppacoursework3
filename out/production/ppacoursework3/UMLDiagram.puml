@@ -1,114 +1,286 @@
 @startuml
-class Conus {
-}
-
 abstract class NonDeterministicCell {
-}
-
-
-class Field {
+# {static} List<Predicate<Cell>> rules
+# Predicate<Cell> currentRule
++ void act()
 }
 
 
 class FieldStats {
+- HashMap<Class,Counter> counters
+- boolean countsValid
++ HashMap<Class,Counter> getPopulationDetails(Field)
++ void reset()
++ void incrementCount(Class)
++ void countFinished()
+- void generateCounts(Field)
 }
 
 
-class Metamorph {
-}
-
-
-class Prokaryote {
-}
-
-
-class Phage {
-}
-
-abstract class AbstractParasite {
-}
-
-
-class Randomizer {
-}
-
-
-class Lycoperdon {
-}
-
-
-abstract class Cell {
-
+class TypedInputDialog {
+- TextField numGen
+- TextField delay
+- GridPane getGridPane()
+- List<Number> convertButtonData(ButtonType)
 }
 
 
 class Simulator {
+- List<Cell> cells
+- Field field
+- int generation
++ {static} int GRID_WIDTH
++ {static} int GRID_HEIGHT
+- CellFactory factory
+- List<Cell> toAdd
+- List<Cell> toRemove
++ void simOneGeneration()
++ void reset()
+- void populate()
++ void delay(int)
++ Field getField()
++ int getGeneration()
++ List<Cell> getToAdd()
++ List<Cell> getToRemove()
 }
 
 
 class Location {
+- int row
+- int col
++ boolean equals(Object)
++ String toString()
++ int hashCode()
++ int row()
++ int col()
 }
 
 
 class CellFactory {
-}
-
-
-class DiseasedCell {
-
-}
-
-
-enum LifeForms {
-}
-
-
-class FieldCanvas {
-}
-
-
-class AliasSampler {
-
-}
-
-
-class GenerationTracker {
-}
-
-
-class Counter {
+- {static} double GRID_SPAWN
++ Cell createCell(LifeForms,Field,Location)
 }
 
 
 class Mycoplasma {
+- boolean fallIll()
++ void act()
 }
+
+class Conus {
+- List<Predicate<Cell>> createRuleSet()
+}
+
+class Field {
+- {static} Random rand
+- int depth
+- int width
+- Cell[][] field
++ void clear()
++ void clear(Location)
++ void place(Cell,int,int)
++ void place(Cell,Location)
++ Cell getObjectAt(Location)
++ Cell getObjectAt(int,int)
++ Location randomAdjacentLocation(Location)
++ List<Location> adjacentLocations(Location)
++ List<Cell> getLivingNeighbours(Location)
++ int getDepth()
++ int getWidth()
+}
+
+
+class Metamorph {
+- List<Predicate<Cell>> rulset
+- Future<?> future
++ void act()
+}
+
+
+class Prokaryote {
+- CellFactory factory
++ void act()
+- double[] getProbabilities(HashMap<Class<? extends Cell>,Integer>,Cell)
+}
+
+
+class Phage {
++ void act()
+}
+
+abstract class AbstractParasite {
+# CellFactory factory
+# GenerationTracker tracker
+# void infectNeighbour()
+}
+
+
+class Randomizer {
+- {static} int SEED
+- {static} Random rand
+- {static} boolean useShared
++ {static} Random getRandom()
++ {static} void reset()
+}
+
+
+class Lycoperdon {
+- int colisionCount
+- Future future
++ void act()
+}
+
+
+abstract class Cell {
+- boolean alive
+- boolean nextAlive
+- Field field
+# boolean isBasic
+- Location location
+- Color color
+# AliasSampler sampler
+# GenerationTracker tracker
++ {abstract}void act()
++ Color getColor()
++ Location getLocation()
+# List<Cell> getSameType()
++ Field getField()
++ boolean isBasic()
++ boolean isAlive()
++ void setDead()
+# void setNextState(boolean)
+# void setColor(Color)
+# void setLocation(Location)
++ void updateState()
+}
+
+
+class DiseasedCell {
+- Future<?> future
+- int getDiseaseLength()
++ void act()
+}
+
+
+enum LifeForms {
++  LYCOPERDON
++  MYCOPLASMA
++  CONUS
++  PHAGE
++  METAMORPH
++  DISEASED
++  PROKARYOTE
+~ int ID
++ {static} LifeForms getByID(int)
+}
+
+
+class FieldCanvas {
+- {static} int GRID_VIEW_SCALING_FACTOR
+- int width
+- int height
+- int xScale
+~ GraphicsContext gc
++ void setScale(int,int)
++ void drawMark(int,int,Color)
+}
+
+
+class AliasSampler {
+- int[] alias
+- double[] probability
+- Random rand
++ int sample()
+}
+
+
+class GenerationTracker {
++ {static} ExecutorService executor
+- int initialGeneration
+- Simulator simulator
+- int currentGen
+- int futureGen
++ Future<?> run()
+}
+
+
+class GUIController {
++ {static} int WIN_WIDTH
++ {static} int WIN_HEIGHT
+- SimulatorView view
+- Button startButton
+- Label genLabel
+- HashMap<Class,Counter> population
+- int mycoCount
++ {static} boolean shouldRun
+- void clickStart(ActionEvent)
+- void clickStep(ActionEvent)
+- void clickReset(ActionEvent)
+- void disableButtons()
+- void enableButtons()
++ void updateGenerationLabel()
++ void updatePopulationLabels()
+- TypedInputDialog createInputDialog()
+- void retrieveStats()
+- void updateCanvas()
+}
+
+
+class Counter {
+- String name
+- int count
++ {static} HashMap<Class<? extends Cell>,Integer> neighbourTypeCount(Cell)
++ int getCount()
++ void increment()
++ void reset()
+}
+
+
 class SimulatorView {
+- FieldCanvas fieldCanvas
+- FieldStats stats
++ {static} Simulator simulator
+- {static} Color EMPTY_COLOR
+- Future<?> simulationComplete
+- GUIController controller
++ void start(Stage)
++ void updateCanvas(Field)
++ void simulate(int,int)
++ void reset()
++ FieldStats getStats()
++ Future getSimulationComplete()
++ {static} void main(String[])
 }
 
 
-Cell ..> Field
-NonDeterministicCell ..> AliasSampler
-Cell ..> GenerationTracker
-Cell ..> Location
-AbstractParasite ..> CellFactory
-Prokaryote ..> CellFactory
-Field ..> Cell
-Field ..> Randomizer
-AliasSampler ..> Randomizer
-Simulator ..> Cell
-Simulator ..> Field
-Simulator ..> CellFactory
-SimulatorView ..> FieldCanvas
-SimulatorView ..> FieldStats
-SimulatorView ..> Simulator
+GenerationTracker ..> Simulator
 FieldStats ..> Counter
-NonDeterministicCell <|-- Conus
+GUIController ..> TypedInputDialog
+GUIController ..> SimulatorView
+GUIController ..> FieldStats
+GUIController ..> GenerationTracker
+GUIController ..> Simulator
+SimulatorView ..> GenerationTracker
+SimulatorView ..> FieldStats
+SimulatorView ..> FieldCanvas
+SimulatorView ..> GUIController
+SimulatorView ..> Simulator
+Cell ..> Location
+Cell ..> Field
+Cell ..> AliasSampler
+Cell ..> GenerationTracker
+AbstractParasite ..> CellFactory
+
+
+
 Cell <|-- NonDeterministicCell
+Dialog <|-- TypedInputDialog
+Cell <|-- Mycoplasma
+NonDeterministicCell <|-- Conus
 Cell <|-- Metamorph
 Cell <|-- Prokaryote
 AbstractParasite <|-- Phage
 Cell <|-- AbstractParasite
 Cell <|-- Lycoperdon
 AbstractParasite <|-- DiseasedCell
-Cell <|-- Mycoplasma
 @enduml

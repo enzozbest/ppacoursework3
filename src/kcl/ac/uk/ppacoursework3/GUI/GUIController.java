@@ -3,118 +3,162 @@ package src.kcl.ac.uk.ppacoursework3.GUI;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.scene.control.*;
-import src.kcl.ac.uk.ppacoursework3.lifeForms.Cell;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import src.kcl.ac.uk.ppacoursework3.concurrent.GenerationTracker;
 import src.kcl.ac.uk.ppacoursework3.lifeForms.*;
+import src.kcl.ac.uk.ppacoursework3.simulation.Simulator;
+import src.kcl.ac.uk.ppacoursework3.utils.Counter;
 
 import java.util.HashMap;
+import java.util.List;
 
-
+/**
+ * This class is the controller for the GUI. It is responsible for handling the user's input and updating the GUI
+ * with the current state of the simulation.
+ * <p>
+ * This class is set as the controller for the GUI in the main FXML file, and as such declares some fields and methods
+ * with the annotation @FXML to allow the JavaBean adapter of JavaFX to access these members.
+ * <p>
+ * The logic behind the GUI is handled in this class, that is, what buttons do when clicked, updating labels, and
+ * initiating a custom dialog to get user input for the simulation. These methods pass the necessary information to the
+ * SimulatorView class to actually perform the simulation tasks.
+ *
+ * @author Enzo Bestetti (K23011872), Krystian Augustynowicz (K23000902)
+ * @version 2024.02.29
+ */
 public class GUIController {
 
     public static final int WIN_WIDTH = 800;
     public static final int WIN_HEIGHT = 800;
-
     private final SimulatorView view;
-
+    private final Simulator simulator;
     @FXML
     private Button startButton, stepButton, resetButton;
-
-    private final FieldStats stats;
-
+    @FXML
+    private Label genLabel, mycoLabel, lycoLabel, conLabel, disLabel, phaLabel, metaLabel;
+    private final HashMap<Class, Counter> population;
     private int mycoCount, lycoCount, conCount, disCount, phaCount, metaCount;
+    public static volatile boolean shouldRun; //volatile to ensure inter-thread visibility
 
-    @FXML
-    private Label mycoLabel, lycoLabel, conLabel, disLabel, phaLabel, metaLabel;
-
-    @FXML
-    private Label genLabel;
-
-    @FXML
-    private final int gen;
-
-    public static boolean shouldRun;
-
+    /**
+     * Create the GUI controller with a reference to the SimulatorView object that is responsible for the simulation.
+     * Initialise fields.
+     *
+     * @param view the SimulatorView object that is responsible for the simulation logic.
+     */
     public GUIController(SimulatorView view) {
         this.view = view;
         shouldRun = false;
-        stats = new FieldStats();
-        gen = 10;
-        mycoCount = 0;
-        lycoCount = 0;
-        conCount = 0;
-        disCount = 0;
-        phaCount = 0;
-        metaCount = 0;
-
+        simulator = SimulatorView.simulator;
+        population = view.getStats().getPopulationDetails(simulator.getField());
     }
 
+    /**
+     * This method is called when the user clicks the "Start" button. It will start the simulation if it is not already
+     * running.
+     * It creates a dialog box to get user input for the number of generations and the delay between each
+     * generation. It then disables the buttons to prevent the user from clicking them while the simulation is running,
+     * which could cause problems, and starts the simulation with the provided parameters.
+     * Once the simulation is complete, it re-enables the buttons and returns control to the user.
+     *
+     * @param actionEvent the button click
+     */
     @FXML
     private void clickStart(ActionEvent actionEvent) {
         shouldRun = !shouldRun;
+
         if (shouldRun) {
+            TypedInputDialog dialog = createInputDialog();
+            dialog.showAndWait();
+            disableButtons();
 
-            TextInputDialog dialog = new TextInputDialog("Game of Life Simulation");
-            DialogPane dialogPane = new DialogPane();
-            dialogPane.setPadding(new Insets(10, 10, 10, 10));
-            dialogPane.setPrefWidth(300);
-            dialogPane.setPrefHeight(100);
+            List<Number> dialogResults = dialog.getResult(); //Get user input from the dialog box
 
-            TextField numGen = new TextField();
-            numGen.setText("Enter the number of generations you wish to simulate");
-            numGen.autosize();
+            int gen = dialogResults.get(0).intValue(); //Use the number of generations as an int
+            double delay = dialogResults.get(1).doubleValue(); //Use the delay as a double
 
-            TextField delay = new TextField();
-            delay.setText("Enter the delay between generations in seconds");
-            delay.autosize();
+            int milisecDelay = (int) (delay * 1000); //Convert the delay to milliseconds
 
+            view.simulate(gen, milisecDelay);
 
-//            VBox vBox = new VBox();
-//            vBox.setAlignment(Pos.BOTTOM_LEFT);
-//            vBox.setSpacing(10);
-//            vBox.getChildren().add(numGen);
-//            vBox.getChildren().add(delay);
-//
-//            dialogPane.getChildren().add(vBox);
+            GenerationTracker.executor.submit(() -> {
+                while (!view.getSimulationComplete().isDone()) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
 
-            dialogPane.autosize();
-
-            dialogPane.setHeaderText("Choose Simulation Parameters");
-            dialog.setTitle("Game of Life Simulation");
-            dialog.setDialogPane(dialogPane);
-            // dialog.show();
-            view.simulate(gen);
-            shouldRun = false;
+                    }
+                }
+                Platform.runLater(this::enableButtons);
+            });
         }
     }
 
-    public void updateGenerationLabel() {
-        genLabel.setText("Generation: " + SimulatorView.simulator.getGeneration());//Updates the GUI
-    }
-
-    private void calculateStats() {
-        HashMap<Class<? extends Cell>, Integer> population = stats.getPopulationDetails(SimulatorView.simulator.getField());
-        mycoCount = population.get(Mycoplasma.class);
-        lycoCount = population.get(Lycoperdon.class);
-        conCount = population.get(Conus.class);
-        disCount = population.get(DiseasedCell.class);
-        phaCount = population.get(Phage.class);
-        metaCount = population.get(Metamorph.class);
-    }
-
-
+    /**
+     * This method is called when the user clicks the "Step" button. It will simulate one generation of the simulation
+     * if the simulation is not currently running.
+     * It also invokes the updateCanvas() method to update the GUI with the state of the simulation after the next
+     * generation is simulated.
+     *
+     * @param actionEvent the button click
+     */
     @FXML
     private void clickStep(ActionEvent actionEvent) {
         if (shouldRun) {
             return;
         }
-        SimulatorView.simulator.simOneGeneration();
-        updateCanvas();
+        simulator.simOneGeneration();
+        this.updateCanvas();
     }
 
-    private void updatePopulationLabels() {
-        calculateStats();
+    /**
+     * This method is called when the user clicks the "Reset" button. It will reset the simulation if the simulation is
+     * not currently running. This means that the field will be cleared and the generation counter will be reset to 0.
+     * The grid is populated again and the GUI is updated to reflect the new state of the simulation.
+     *
+     * @param actionEvent the button click
+     */
+    @FXML
+    private void clickReset(ActionEvent actionEvent) {
+        if (shouldRun) {
+            return;
+        }
+        view.reset();
+        startButton.setText("Start");
+        this.updateCanvas();
+    }
+
+    /**
+     * Set the buttons to be disabled, to prevent the user from clicking them while the simulation is running.
+     */
+    private void disableButtons() {
+        resetButton.setDisable(true);
+        stepButton.setDisable(true);
+        startButton.setDisable(true);
+    }
+
+    /**
+     * Set the buttons to be enabled, to allow the user to interact with the GUI again.
+     */
+    private void enableButtons() {
+        resetButton.setDisable(false);
+        stepButton.setDisable(false);
+        startButton.setDisable(false);
+    }
+
+    /**
+     * Update the generation label to display the current generation number.
+     */
+    public void updateGenerationLabel() {
+        genLabel.setText("Generation: " + simulator.getGeneration()); //Updates the GUI
+    }
+
+    /**
+     * Update the population labels to display the current population of each life form.
+     */
+    public void updatePopulationLabels() {
+        retrieveStats();
         mycoLabel.setText("Mycoplasma: " + mycoCount);
         lycoLabel.setText("Lycoperdon: " + lycoCount);
         conLabel.setText("Conus: " + conCount);
@@ -123,23 +167,41 @@ public class GUIController {
         metaLabel.setText("Metamorph: " + metaCount);
     }
 
-    private void updateCanvas() {
-        Platform.runLater(() -> {
-                    view.updateCanvas(SimulatorView.simulator.getField());
-                    updateGenerationLabel();
-                    updatePopulationLabels();
-                }
-        );
-        SimulatorView.simulator.delay(10); //ensures the GUI has time to update before simulating the next generation.
+    /**
+     * Create a custom dialog box to get user input for the number of generations and the delay between each generation.
+     *
+     * @return the dialog box
+     */
+    private TypedInputDialog createInputDialog() {
+        TypedInputDialog dialog = new TypedInputDialog();
+        dialog.setTitle("Game of Life Simulation");
+        return dialog;
     }
 
-    @FXML
-    private void clickReset(ActionEvent actionEvent) {
-        if (shouldRun) {
+    /**
+     * Retrieve the current population of each life form  and store the counts in the appropriate fields.
+     * This method is called when the GUI is first created and when the population labels are updated.
+     */
+    private void retrieveStats() {
+        mycoCount = population.get(Mycoplasma.class).getCount();
+        lycoCount = population.get(Lycoperdon.class).getCount();
+        conCount = population.get(Conus.class).getCount();
+
+        phaCount = population.get(Phage.class).getCount();
+        metaCount = population.get(Metamorph.class).getCount();
+
+        if (population.get(DiseasedCell.class) == null) {
+            disCount = 0;
             return;
         }
-        view.reset();
-        startButton.setText("Start");
-        updateCanvas();
+        disCount = population.get(DiseasedCell.class).getCount();
+    }
+
+    /**
+     * Update the canvas to display the current state of the simulation.
+     */
+    private void updateCanvas() {
+        Platform.runLater(() -> view.updateCanvas(simulator.getField()));
+        simulator.delay(10); //ensures the GUI has time to update before simulating the next generation.
     }
 }

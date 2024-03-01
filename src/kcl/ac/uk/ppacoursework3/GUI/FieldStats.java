@@ -12,7 +12,7 @@ import java.util.HashMap;
  * for any class of object that is found within the field.
  *
  * @author David J. Barnes and Michael Kölling, Enzo Bestetti (K23011872), Krystian Augustynowicz(K23000902)
- * @version 2024.02.12
+ * @version 2024.02.29
  */
 
 public class FieldStats {
@@ -32,17 +32,12 @@ public class FieldStats {
     /**
      * Get details of what is in the field.
      *
-     * @return A string describing what is in the field.
+     * @return A HashMap containing each life form contained in the field and their respective counter.
      */
-    public HashMap<Class<? extends Cell>, Integer> getPopulationDetails(Field field) {
-        HashMap<Class<? extends Cell>, Integer> population = new HashMap<>();
-        if (!countsValid) {
-            generateCounts(field);
-        }
-        for (Class key : counters.keySet()) {
-            population.put(key, counters.get(key).getCount());
-        }
-        return population;
+    public HashMap<Class, Counter> getPopulationDetails(Field field) {
+        if (!countsValid) generateCounts(field);
+
+        return counters;
     }
 
     /**
@@ -63,9 +58,9 @@ public class FieldStats {
      * @param cellClass The class of cell to increment.
      */
     public void incrementCount(Class cellClass) {
+        //Use function computeIfAbsent to create a new counter if the cellClass is not present in the map.
         Counter count = counters.computeIfAbsent(cellClass, c -> new Counter(c.getName()));
 
-        // We do not have a counter for this species yet. Create one.
         count.increment();
     }
 
@@ -76,25 +71,6 @@ public class FieldStats {
         countsValid = true;
     }
 
-    /**
-     * Determine whether the simulation is still viable.
-     * I.e., should it continue to run.
-     *
-     * @return true If there is more than one life form alive
-     */
-    public boolean isViable(Field field) {
-        int nonZero = 0;
-        if (!countsValid) {
-            generateCounts(field);
-        }
-        for (Class key : counters.keySet()) {
-            Counter info = counters.get(key);
-            if (info.getCount() > 0) {
-                nonZero++;
-            }
-        }
-        return nonZero >= 1;
-    }
 
     /**
      * Generate counts of the number of cells.
@@ -104,12 +80,14 @@ public class FieldStats {
      */
     private void generateCounts(Field field) {
         reset();
+
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
                 Cell cell = field.getObjectAt(row, col);
                 incrementCount(cell.getClass());
             }
         }
+
         countsValid = true;
     }
 }

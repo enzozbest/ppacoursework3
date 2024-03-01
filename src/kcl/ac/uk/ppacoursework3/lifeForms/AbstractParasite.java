@@ -2,7 +2,6 @@ package src.kcl.ac.uk.ppacoursework3.lifeForms;
 
 import javafx.scene.paint.Color;
 import src.kcl.ac.uk.ppacoursework3.GUI.SimulatorView;
-import src.kcl.ac.uk.ppacoursework3.concurrent.GenerationTracker;
 import src.kcl.ac.uk.ppacoursework3.simulation.Field;
 import src.kcl.ac.uk.ppacoursework3.simulation.Location;
 
@@ -26,8 +25,6 @@ public abstract class AbstractParasite extends Cell {
 
     protected CellFactory factory;
 
-    protected GenerationTracker tracker;
-
     /**
      * Create a parasitic cell at a location in field.
      *
@@ -37,7 +34,7 @@ public abstract class AbstractParasite extends Cell {
      */
     protected AbstractParasite(Field field, Location location, Color col) {
         super(field, location, col);
-        factory = new CellFactory();
+        factory = CellFactory.getInstance();
     }
 
     /**
@@ -52,7 +49,7 @@ public abstract class AbstractParasite extends Cell {
             if (neighbour instanceof Mycoplasma) { //Check for each neighbour of a Phage if it is a Mycoplasma it can infect.
 
                 //Substitute Phage with a default cell, as if the virus has entered its neighbour.
-                Cell basicCell = factory.createCell(LifeForms.PROKARYOTE, getField(), getLocation());
+                Cell basicCell = factory.createCell(LifeForms.PROKARYOTE, getLocation(), getField());
                 basicCell.setDead();
                 getField().place(basicCell, getLocation());
                 SimulatorView.simulator.getToAdd().add(basicCell);
