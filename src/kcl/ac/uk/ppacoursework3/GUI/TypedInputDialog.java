@@ -39,7 +39,7 @@ public class TypedInputDialog extends Dialog<List<Number>> {
      */
     public TypedInputDialog() {
         DialogPane pane = getDialogPane();
-        pane.setPrefWidth(300);
+        pane.setPrefWidth(350);
         pane.setPrefHeight(200);
         pane.setContent(getGridPane());
 
@@ -61,7 +61,7 @@ public class TypedInputDialog extends Dialog<List<Number>> {
         delay = new TextField();
 
         Label numGenLabel = new Label("Number of Generations:");
-        Label delayLabel = new Label("Simulation Speed (seconds):");
+        Label delayLabel = new Label("Delay between Generations (sec):");
 
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
